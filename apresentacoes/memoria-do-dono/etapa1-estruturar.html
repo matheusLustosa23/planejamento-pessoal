@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>1 · Estruturar — Memória do Dono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <a class="home" href="index.html">◆ Memória do Dono</a>
+    <span class="trilha">
+      <a href="index.html" title="Início">◆</a>
+      <span class="at">1</span>
+      <a href="etapa2-salvar.html">2</a>
+      <a href="etapa3-buscar.html">3</a>
+      <a href="etapa4-atualizar.html">4</a>
+      <a href="etapa5-apagar.html">5</a>
+    </span>
+  </div>
+
+  <div class="etapa-tag">Etapa 1 de 5</div>
+  <h1>Estruturar: onde a memória mora</h1>
+  <p class="lede">Antes de salvar ou buscar qualquer coisa, é preciso decidir <strong>em que forma</strong> a lembrança fica guardada. Essa escolha define tudo o que dá para fazer depois — principalmente se um "update" vai ser um update de verdade.</p>
+
+  <div class="dia" role="img" aria-label="Quatro formas de guardar memória: texto solto, blocos, vetor+grafo, tabelas tipadas">
+    <svg viewBox="0 0 820 230">
+      <!-- texto solto -->
+      <text class="ts" x="20" y="26">Texto solto (stream)</text>
+      <rect class="b" x="20" y="36" width="150" height="12" rx="3"/>
+      <rect class="b" x="20" y="54" width="150" height="12" rx="3"/>
+      <rect class="b" x="20" y="72" width="120" height="12" rx="3"/>
+      <text class="td" x="20" y="104">uma linha por lembrança</text>
+      <!-- vetor -->
+      <text class="ts" x="210" y="26">Vetor (+ grafo)</text>
+      <circle class="bc" cx="232" cy="52" r="9"/><circle class="bc" cx="262" cy="70" r="9"/>
+      <circle class="bc" cx="300" cy="48" r="9"/><circle class="bc" cx="330" cy="74" r="9"/>
+      <path class="fio" d="M241 52 L291 48 M271 70 L321 74 M241 56 L261 66"/>
+      <text class="td" x="210" y="104">pontos num espaço semântico</text>
+      <!-- blocos -->
+      <text class="ts" x="420" y="26">Blocos (core/arquivo)</text>
+      <rect class="ba" x="420" y="34" width="150" height="20" rx="5"/><text class="tm" x="428" y="48">core · sempre no contexto</text>
+      <rect class="b" x="420" y="60" width="150" height="16" rx="4"/><text class="tm" x="428" y="72">arquivo · buscável</text>
+      <text class="td" x="420" y="104">camadas editáveis</text>
+      <!-- tabelas tipadas (nós) -->
+      <text class="ts" x="620" y="26" fill="var(--accent)">Tabelas tipadas — nós</text>
+      <rect class="ba" x="620" y="34" width="86" height="18" rx="4"/><text class="tm" x="626" y="47">entidades</text>
+      <rect class="bc" x="620" y="56" width="86" height="18" rx="4"/><text class="tm" x="626" y="69">observações</text>
+      <rect class="bc" x="714" y="56" width="86" height="18" rx="4"/><text class="tm" x="720" y="69">registros</text>
+      <rect class="b" x="620" y="78" width="86" height="16" rx="4"/><text class="tm" x="626" y="90">relações</text>
+      <text class="td" x="620" y="116">campos explícitos</text>
+      <!-- faixa inferior: do mais solto ao mais estruturado -->
+      <line x1="20" y1="150" x2="800" y2="150" stroke="var(--line)" stroke-width="1.5"/>
+      <text class="tm" x="20" y="172">menos estrutura</text>
+      <text class="tm" x="690" y="172">mais estrutura</text>
+      <path class="fioa" d="M150 186 H670" marker-end="url(#e)"/>
+      <text class="tc" x="300" y="206">"update de verdade" fica mais fácil →</text>
+      <defs><marker id="e" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pta" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">Quanto mais à direita (campos explícitos em vez de texto), mais o sistema sabe <em>o que</em> está guardando — e mais fácil fica corrigir sem perder o histórico.</p>
+  </div>
+
+  <h2><span class="k">como fazem</span>As quatro formas de referência</h2>
+  <ul>
+    <li><strong>Texto livre (stream)</strong> — <strong>Generative Agents</strong> <span class="tagref">arXiv 2304.03442</span>: toda experiência vira uma linha em linguagem natural num "memory stream". Simples e expressivo, mas o sistema não "entende" os campos — corrigir é difícil.</li>
+    <li><strong>Blocos em camadas</strong> — <strong>MemGPT / Letta</strong>: trata o contexto como RAM, com <em>core</em> (sempre visível, o agente edita), <em>recall</em> (histórico buscável) e <em>archival</em> (longo prazo). Depende de um modelo forte para se auto-editar bem.</li>
+    <li><strong>Vetor (+ grafo)</strong> — <strong>mem0</strong>: cada fato vira um vetor numa loja semântica, com um grafo opcional para relações. Ótimo para buscar por significado; a estrutura do fato fica implícita.</li>
+    <li><strong>Grafo temporal</strong> — <strong>Zep / Graphiti</strong>: entidades e fatos como nós e arestas, cada aresta com período de validade. O mais estruturado — e o mais caro de escrever.</li>
+  </ul>
+  <p>O vocabulário comum vem do <strong>CoALA</strong> <span class="tagref">arXiv 2309.02427</span>, que separa a memória em <em>working</em> (o contexto atual), <em>episódica</em> (eventos), <em>semântica</em> (fatos) e <em>procedural</em> (como agir). A boa prática repetida: <strong>manter os tipos separados</strong>, porque cada um tem ciclo de vida próprio.</p>
+
+  <div class="vs">
+    <div class="lado eles">
+      <h4>Como fazem</h4>
+      <p class="sub">do texto solto ao grafo</p>
+      <ul>
+        <li><b>Texto/stream:</b> expressivo, mas opaco ao sistema.</li>
+        <li><b>Blocos:</b> camadas editáveis pelo agente.</li>
+        <li><b>Vetor:</b> significado sim, campos não.</li>
+        <li><b>Grafo temporal:</b> o mais rico — e o mais pesado.</li>
+      </ul>
+    </div>
+    <div class="lado nos">
+      <h4>Como fazemos</h4>
+      <p class="sub">SQLite tipado em <code>data/cerebro.db</code></p>
+      <ul>
+        <li><b>entidades</b> — "Você", "Supino reto" (nome · tipo).</li>
+        <li><b>observações</b> = semântica (fatos sobre o dono).</li>
+        <li><b>registros</b> = episódica (eventos, com data e JSON).</li>
+        <li><b>relações</b> · <b>lembretes</b> · <b>obs_fts</b> (índice de busca).</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="dia" role="img" aria-label="Esquema do cérebro: tipos, entidades, observações, registros, obs_fts, relações, lembretes">
+    <svg viewBox="0 0 860 300">
+      <rect class="b" x="16" y="120" width="150" height="56" rx="9"/>
+      <text class="t" x="30" y="143">tipos</text><text class="tm" x="30" y="162">nome · área</text>
+      <rect class="ba" x="210" y="118" width="170" height="62" rx="9"/>
+      <text class="t" x="226" y="141">entidades</text><text class="tm" x="226" y="160">nome · tipo</text><text class="td" x="226" y="174">"Você", "Supino reto"</text>
+      <rect class="bc" x="430" y="16" width="200" height="74" rx="9"/>
+      <text class="t" x="446" y="39">observações</text><text class="td" x="446" y="57">fatos (semântica)</text><text class="tm" x="446" y="76">substitui · invalido_em</text>
+      <rect class="bc" x="430" y="208" width="200" height="74" rx="9"/>
+      <text class="t" x="446" y="231">registros</text><text class="td" x="446" y="249">eventos (episódica)</text><text class="tm" x="446" y="268">dados JSON · sessão</text>
+      <rect class="b" x="676" y="16" width="168" height="74" rx="9"/>
+      <text class="t" x="692" y="39">obs_fts</text><text class="td" x="692" y="57">índice de busca</text><text class="tm" x="692" y="76">FTS5 · sem acento</text>
+      <rect class="b" x="676" y="118" width="168" height="62" rx="9"/>
+      <text class="t" x="692" y="141">relações</text><text class="td" x="692" y="160">entidade → entidade</text>
+      <rect class="b" x="676" y="208" width="168" height="74" rx="9"/>
+      <text class="t" x="692" y="231">lembretes</text><text class="td" x="692" y="249">avisam no futuro</text><text class="tm" x="692" y="268">próximo · recorrência</text>
+      <path class="fio" d="M166 148 H206" marker-end="url(#a)"/>
+      <path class="fio" d="M380 140 C408 140 408 60 428 56" marker-end="url(#a)"/>
+      <path class="fio" d="M380 158 C408 158 408 240 428 244" marker-end="url(#a)"/>
+      <path class="fio" d="M630 53 H672" marker-end="url(#a)"/>
+      <path class="fio" d="M380 150 C520 150 540 148 672 148" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">Mapeando à taxonomia clássica: <strong>observações = semântica</strong>, <strong>registros = episódica</strong>, o <strong>bloco injetado no contexto = working</strong>, e as <strong>regras de prompt + o código = procedural</strong>. Temos os quatro tipos — estruturalmente parecidos com Letta/CoALA.</p>
+  </div>
+
+  <h2><span class="k">lado a lado</span>Armazenamento, por sistema</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Sistema</th><th>Forma de guardar</th><th>Tipos separados?</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Generative Agents</strong></td><td>texto livre (stream)</td><td><span class="pill meio">implícito</span></td></tr>
+      <tr><td><strong>MemGPT / Letta</strong></td><td>blocos (core) + arquivo</td><td><span class="pill sim">sim</span></td></tr>
+      <tr><td><strong>mem0</strong></td><td>vetor + grafo opcional</td><td><span class="pill meio">parcial</span></td></tr>
+      <tr><td><strong>Zep / Graphiti</strong></td><td>grafo temporal (validade)</td><td><span class="pill sim">sim</span></td></tr>
+      <tr><td><strong>Nosso cérebro</strong></td><td>SQLite estruturado (entidades + observações + registros + relações)</td><td><span class="pill sim">sim</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="vd bom">
+    <span class="et">acerto</span>
+    <p>O esquema <strong>estruturado</strong> é a nossa maior força e nos põe à frente do texto-solto: guardar campos explícitos (entidade, atributo, valor, data) é o que faz um update ser real na Etapa 4. Já separamos episódica × semântica, como as referências mandam. A dívida aqui é pequena: não <em>normalizamos</em> o formato de gravação dos registros (cada log pode gravar o JSON num jeito), mas o alicerce está certo.</p>
+  </div>
+
+  <div class="prox">
+    <a class="so1 n" href="etapa2-salvar.html">
+      <div class="rot">Próxima →</div>
+      <div class="tit">2 · Salvar — extrair o fato e gravar</div>
+    </a>
+  </div>
+
+  <footer>Memória do Dono · etapa 1/5 · nov 2026 · <a href="index.html">voltar ao índice</a></footer>
+
+</div>
+</body>
+</html>

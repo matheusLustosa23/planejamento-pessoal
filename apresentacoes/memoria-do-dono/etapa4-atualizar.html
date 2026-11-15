@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>4 · Atualizar — Memória do Dono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <a class="home" href="index.html">◆ Memória do Dono</a>
+    <span class="trilha">
+      <a href="index.html" title="Início">◆</a>
+      <a href="etapa1-estruturar.html">1</a>
+      <a href="etapa2-salvar.html">2</a>
+      <a href="etapa3-buscar.html">3</a>
+      <span class="at">4</span>
+      <a href="etapa5-apagar.html">5</a>
+    </span>
+  </div>
+
+  <div class="etapa-tag">Etapa 4 de 5</div>
+  <h1>Atualizar: quando um fato muda</h1>
+  <p class="lede">"Mudei de cidade." "Agora treino 3× por semana." A memória precisa corrigir sem <strong>apagar o passado</strong> e sem <strong>jogar fora um fato paralelo que ainda vale</strong>. É aqui que os sistemas mais se diferenciam.</p>
+
+  <div class="dia" role="img" aria-label="Sucessão de fatos: o antigo ganha data de fim e o novo fica ativo, sem apagar o histórico">
+    <svg viewBox="0 0 820 180">
+      <line x1="40" y1="90" x2="780" y2="90" stroke="var(--line)" stroke-width="2"/>
+      <text class="tm" x="40" y="118">set</text><text class="tm" x="400" y="118">nov (mudança)</text><text class="tm" x="740" y="118">hoje</text>
+      <!-- fato antigo -->
+      <rect class="b" x="60" y="50" width="330" height="34" rx="7" opacity=".6"/>
+      <text class="ts" x="74" y="71" opacity=".7">cidade = Anápolis</text>
+      <text class="tc" x="300" y="44">invalido_em ↓</text>
+      <!-- fato novo -->
+      <rect class="ba" x="410" y="50" width="330" height="34" rx="7"/>
+      <text class="ts" x="424" y="71">cidade = Goiânia</text>
+      <line x1="400" y1="40" x2="400" y2="140" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/>
+      <text class="td" x="60" y="160">o antigo não some — fica com data de fim (histórico preservado)</text>
+      <path class="fioa" d="M340 86 C360 92 380 92 408 78" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pta" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O padrão maduro: contradição não é delete, é <strong>sucessão</strong>. O fato antigo ganha uma data de fim e continua existindo; o novo fica ativo. Dá para perguntar "onde ele morava em outubro?" depois.</p>
+  </div>
+
+  <h2><span class="k">como fazem</span>Três graus de sofisticação</h2>
+  <ul>
+    <li><strong>Apagar e reescrever</strong> — <strong>mem0</strong>: na escrita, decide <code>ADD / UPDATE / DELETE</code>. Loja limpa, mas o <code>DELETE</code> perde o histórico.</li>
+    <li><strong>Sucessão temporal</strong> — <strong>Zep / Graphiti</strong>: cada fato tem período de validade; a contradição vira uma sucessão (o antigo recebe data de fim). Bi-temporal: sabe <em>quando o fato valeu</em> e <em>quando foi aprendido</em>.</li>
+    <li><strong>Cardinalidade</strong> — <strong>REAL</strong> <span class="tagref">arXiv 2606.10694</span>: distingue atributos de <em>um</em> valor por vez ("cidade atual" — muda, o antigo fecha) de atributos que <em>coexistem</em> ("comidas que gosta" — somam). Evita tanto apagar fatos paralelos válidos quanto perder mudanças reais.</li>
+  </ul>
+
+  <div class="vs">
+    <div class="lado eles">
+      <h4>Como fazem</h4>
+      <p class="sub">do delete à cardinalidade</p>
+      <ul>
+        <li><b>mem0:</b> UPDATE/DELETE na escrita — simples, perde histórico.</li>
+        <li><b>Zep:</b> sucessão com validade — grafo temporal completo.</li>
+        <li><b>REAL:</b> + cardinalidade (1 valor × N valores).</li>
+      </ul>
+    </div>
+    <div class="lado nos">
+      <h4>Como fazemos</h4>
+      <p class="sub">nunca apagar, encadear</p>
+      <ul>
+        <li>Observação <b>nunca é apagada</b>.</li>
+        <li>Corrigir cria uma nova com <code>substitui</code> → a antiga.</li>
+        <li>Registro errado se corrige por <code>invalido_em</code>.</li>
+        <li><b>Falta:</b> grafo temporal, cardinalidade e dedup.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p>O nosso modelo é uma <strong>sucessão de fatos sem o grafo temporal completo</strong>: preservamos o histórico (parecido com Zep no espírito), mas não temos validade bi-temporal nem a noção de cardinalidade. Também não há <strong>deduplicação</strong>: do mais simples (hash exato do texto, como o mem0 V3) ao mais robusto (similaridade com limiar ~0,92, com verdictos "duplicado / contradiz / refina / sem conflito"). Hoje "Supino reto" vira entidade nova se não bate exatamente com "Supino máquina reto".</p>
+
+  <h2><span class="k">lado a lado</span>Correção e conflito</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Capacidade</th><th>Referências</th><th>Nós hoje</th></tr></thead>
+    <tbody>
+      <tr><td>Correção preservando histórico</td><td>sim (sucessão)</td><td><span class="pill sim">sim</span> <code>substitui</code> / <code>invalido_em</code></td></tr>
+      <tr><td>Validade temporal (bi-temporal)</td><td>sim (Zep)</td><td><span class="pill nao">não</span> sem grafo temporal</td></tr>
+      <tr><td>Cardinalidade (1 valor × N valores)</td><td>sim (REAL)</td><td><span class="pill nao">não</span></td></tr>
+      <tr><td>Deduplicação (exata / por similaridade)</td><td>sim</td><td><span class="pill nao">não</span> entidade nova se não bate exato</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="vd meio">
+    <span class="et">parcial — a base está certa</span>
+    <p>Acertamos o essencial: <strong>nunca apagar</strong> e corrigir por encadeamento é o espírito da sucessão de fatos. As lacunas — validade temporal, cardinalidade e dedup — são incrementos sobre o esquema que já temos, não uma reescrita. A primeira a atacar é provavelmente o <strong>dedup</strong>, porque ele suja a busca (Etapa 3) ao multiplicar entidades quase iguais.</p>
+  </div>
+
+  <div class="prox">
+    <a class="n" href="etapa3-buscar.html"><div class="rot">← Anterior</div><div class="tit">3 · Buscar</div></a>
+    <a class="n" href="etapa5-apagar.html"><div class="rot">Próxima →</div><div class="tit">5 · Apagar</div></a>
+  </div>
+
+  <footer>Memória do Dono · etapa 4/5 · nov 2026 · <a href="index.html">voltar ao índice</a></footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>2 · Salvar — Memória do Dono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <a class="home" href="index.html">◆ Memória do Dono</a>
+    <span class="trilha">
+      <a href="index.html" title="Início">◆</a>
+      <a href="etapa1-estruturar.html">1</a>
+      <span class="at">2</span>
+      <a href="etapa3-buscar.html">3</a>
+      <a href="etapa4-atualizar.html">4</a>
+      <a href="etapa5-apagar.html">5</a>
+    </span>
+  </div>
+
+  <div class="etapa-tag">Etapa 2 de 5</div>
+  <h1>Salvar: extrair o fato e gravar</h1>
+  <p class="lede">Da conversa sai uma lembrança. Duas perguntas decidem o desenho: <strong>quem extrai o fato</strong> — o modelo ou o código? E <strong>quem resolve o conflito</strong> com o que já existe — na hora de escrever ou só na hora de ler?</p>
+
+  <div class="dia" role="img" aria-label="Pipeline de salvar: fala, decisão do modelo, parse de data e número no código, gravação">
+    <svg viewBox="0 0 820 190">
+      <rect class="b" x="16" y="70" width="120" height="48" rx="9"/>
+      <text class="t" x="30" y="92">fala do dono</text><text class="td" x="30" y="108">"fiz supino ontem"</text>
+      <rect class="ba" x="188" y="70" width="150" height="48" rx="9"/>
+      <text class="t" x="202" y="90">modelo decide</text><text class="td" x="202" y="106">o QUE salvar (tool)</text>
+      <rect class="bw" x="392" y="70" width="156" height="48" rx="9"/>
+      <text class="t" x="406" y="90">código resolve</text><text class="td" x="406" y="106">data + número</text>
+      <rect class="bc" x="602" y="44" width="200" height="44" rx="9"/>
+      <text class="t" x="616" y="64">observação</text><text class="tm" x="616" y="80">fato sobre o dono</text>
+      <rect class="bc" x="602" y="100" width="200" height="44" rx="9"/>
+      <text class="t" x="616" y="120">registro</text><text class="tm" x="616" y="136">evento + JSON + sessão</text>
+      <path class="fioa" d="M136 94 H186" marker-end="url(#a)"/>
+      <path class="fioa" d="M338 94 H390" marker-end="url(#a)"/>
+      <path class="fio" d="M548 90 C575 90 578 68 600 66" marker-end="url(#a)"/>
+      <path class="fio" d="M548 98 C575 98 578 120 600 122" marker-end="url(#a)"/>
+      <text class="tc" x="392" y="160">o modelo é fraco em data/conta → sai do caminho dele</text>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O nosso fluxo: o modelo decide <em>o quê</em> salvar e chama a ferramenta; o <strong>código</strong> converte "ontem 18:40" em timestamp e guarda os números estruturados. Divisão de trabalho pela fraqueza do modelo.</p>
+  </div>
+
+  <h2><span class="k">debate 1</span>Quem extrai: o LLM ou o código?</h2>
+  <p>O padrão dominante é o <strong>LLM extrair</strong> campos estruturados na escrita — <strong>mem0</strong> usa duas chamadas de LLM por par de mensagens; <strong>Zep</strong> faz isso de forma assíncrona. Mas uma linha de trabalho usa <strong>código determinístico + o LLM só para a pergunta de contradição</strong> <span class="tagref">arXiv 2604.19771</span>.</p>
+  <p>É exatamente a nossa escolha para <strong>data e número</strong>: o modelo erra isso (já o vimos errar o dia da semana), então o <code>quando_de</code>/<code>desde_de</code> no código resolve a data e o modelo não precisa calcular nada. O modelo fica com o que faz bem — entender <em>que</em> há um fato ali e chamar a ferramenta. É o mesmo princípio de "matemática vai para o código".</p>
+
+  <h2><span class="k">debate 2</span>Conflito na escrita ou na leitura?</h2>
+  <div class="vs">
+    <div class="lado eles">
+      <h4>Na escrita</h4>
+      <p class="sub">mem0, Zep</p>
+      <ul>
+        <li>A cada fato novo, compara com os parecidos e decide <b>ADD / UPDATE / DELETE / NONE</b>.</li>
+        <li><b>Vantagem:</b> a loja fica sempre limpa.</li>
+        <li><b>Custo:</b> escrita mais lenta, e pode <b>perder</b> fatos ao apagar.</li>
+      </ul>
+    </div>
+    <div class="lado nos">
+      <h4>Na leitura (+ um toque na escrita) — nós</h4>
+      <p class="sub">guardar tudo, buscar bem</p>
+      <ul>
+        <li>A observação <b>nunca é apagada</b> — o histórico fica.</li>
+        <li>Corrigir cria uma <b>nova</b> com <code>substitui</code> apontando para a antiga.</li>
+        <li>Parecido com a "sucessão de fatos" do Zep, sem o grafo temporal completo (ver Etapa 4).</li>
+      </ul>
+    </div>
+  </div>
+  <p>Há uma crítica conhecida de que pedir ao LLM uma loja livre de conflito <em>a cada escrita</em> é "mais difícil, mais lento e de pior qualidade" que guardar tudo e investir na recuperação. O nosso desenho fica desse lado — mais barato de escrever e sem risco de apagar algo válido.</p>
+
+  <h2><span class="k">nossas ferramentas</span>O que o modelo chama para salvar</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Ferramenta</th><th>Faz</th><th>Escreve</th></tr></thead>
+    <tbody>
+      <tr><td><code>remember</code></td><td>grava um fato sobre o dono</td><td>observação (com <code>substitui</code> para corrigir)</td></tr>
+      <tr><td><code>log</code></td><td>registra o que ele fez (treino, série, estudo)</td><td>registro (abre/fecha sessão; <code>igual_ultima</code>, <code>cada_lado</code>)</td></tr>
+      <tr><td><code>remind</code></td><td>compromisso que avisa no futuro</td><td>lembrete (agendador no servidor)</td></tr>
+    </tbody>
+  </table></div>
+  <div class="nota"><b>Regra de ouro medida no ensaio:</b> "NUNCA diga que guardou/anotou/registrou sem <strong>chamar a ferramenta no mesmo turno</strong>." Numa sessão real o agente dizia "vou gravar" e <em>não chamava nada</em> — o banco ficava vazio. A regra no prompt corrigiu quase tudo; o resíduo é o caso <strong>salvar vago</strong> (fato impreciso → ele deveria perguntar, mas às vezes salva torto).</p>
+
+  <div class="vd meio">
+    <span class="et">defensável, com lacuna</span>
+    <p><strong>Defensável:</strong> o determinismo em data/número é vantagem real dado o nosso modelo fraco. <strong>Lacuna:</strong> não temos <em>dedup semântico</em> na escrita — "Supino reto" vira entidade nova se não bate exatamente com "Supino máquina reto" (todos os sistemas maduros resolvem isso por similaridade, com limiar ~0,92). E o caso <strong>salvar vago</strong> ainda erra às vezes: medir e endurecer o "pergunte quando o fato não estiver claro".</p>
+  </div>
+
+  <div class="prox">
+    <a class="n" href="etapa1-estruturar.html"><div class="rot">← Anterior</div><div class="tit">1 · Estruturar</div></a>
+    <a class="n" href="etapa3-buscar.html"><div class="rot">Próxima →</div><div class="tit">3 · Buscar</div></a>
+  </div>
+
+  <footer>Memória do Dono · etapa 2/5 · nov 2026 · <a href="index.html">voltar ao índice</a></footer>
+
+</div>
+</body>
+</html>

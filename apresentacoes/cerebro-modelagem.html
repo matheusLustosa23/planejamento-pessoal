@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cérebro — Modelagem Completa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --bg:#f6f4ef; --surf:#fffdf9; --surf2:#efece4; --ink:#1c1b18; --ink2:#55514a; --line:#ddd8cd;
+  --accent:#9a5b2e; --accent2:#2f6b5e; --warn:#8a5a12; --warn-bg:#f6ecd6; --ok:#2f6b5e; --ref:#3a5a8c;
+  --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad; --ref:#8ab0e8; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad; --ref:#8ab0e8; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.62 var(--sans);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1200px;margin:0 auto;padding-block:28px 72px;display:grid;grid-template-columns:234px minmax(0,1fr);gap:40px}
+@media (max-width:920px){.wrap{grid-template-columns:1fr;gap:18px}}
+nav{position:sticky;top:max(12px,env(safe-area-inset-top,0px));align-self:start;font-size:.85rem;max-height:calc(100vh - 36px);overflow:auto}
+@media (max-width:920px){nav{position:static;max-height:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px 14px}}
+nav .marca{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--accent);margin-bottom:2px}
+nav .data{color:var(--ink2);font-size:.75rem;margin-bottom:14px}
+nav ol{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:1px}
+nav a{display:block;color:var(--ink2);text-decoration:none;padding:4px 8px;border-radius:7px}
+nav a:hover{color:var(--ink);background:var(--surf2)}
+nav li{counter-increment:n}
+nav a::before{content:counter(n) ". ";color:var(--accent);font-variant-numeric:tabular-nums}
+main{min-width:0}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.9rem);line-height:1.07;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+.lede{font-size:1.1rem;color:var(--ink2);max-width:70ch;margin:0 0 8px}
+h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;margin:48px 0 4px;scroll-margin-top:16px;padding-top:18px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{display:block;font:600 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.1rem;margin:28px 0 6px}
+h3 code{font-size:.9em}
+p{margin:10px 0;max-width:76ch}
+a{color:var(--accent)}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.85em;background:var(--surf2);padding:.08em .35em;border-radius:4px;overflow-wrap:anywhere}
+ul{max-width:76ch;padding-left:1.2em;margin:10px 0}
+li{margin:5px 0}
+.nota{border-left:3px solid var(--warn);background:var(--warn-bg);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:.95rem;max-width:76ch}
+.nota b{color:var(--warn)}
+.pre{background:var(--surf);border:1px solid var(--line);border-radius:10px;padding:13px 15px;margin:14px 0;overflow-x:auto;
+  font:.82rem/1.5 var(--mono);color:var(--ink);white-space:pre}
+.pre .c{color:var(--ink2)}
+.pre .kw{color:var(--accent)}
+.pre .s{color:var(--accent2)}
+.dia{overflow-x:auto;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:16px;margin:18px 0}
+.dia svg{display:block;width:100%;height:auto;min-width:560px}
+.dia .cap{font-size:.82rem;color:var(--ink2);margin:10px 2px 0}
+svg .b{fill:var(--surf2);stroke:var(--line);stroke-width:1.5}
+svg .ba{fill:color-mix(in srgb,var(--accent) 14%,var(--surf));stroke:var(--accent);stroke-width:1.5}
+svg .bc{fill:color-mix(in srgb,var(--accent2) 14%,var(--surf));stroke:var(--accent2);stroke-width:1.5}
+svg .bw{fill:var(--warn-bg);stroke:var(--warn);stroke-width:1.5}
+svg .t{fill:var(--ink);font:600 13px var(--sans)}
+svg .ts{fill:var(--ink);font:600 11.5px var(--sans)}
+svg .tm{fill:var(--ink2);font:10.5px var(--mono)}
+svg .td{fill:var(--ink2);font:11px var(--sans)}
+svg .tc{fill:var(--accent);font:600 11px var(--mono)}
+svg .fio{stroke:var(--ink2);stroke-width:1.4;fill:none}
+svg .fioa{stroke:var(--accent);stroke-width:1.6;fill:none}
+svg .pt{fill:var(--ink2)}
+svg .pta{fill:var(--accent)}
+.tomo{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.88rem;min-width:560px}
+th,td{text-align:left;padding:9px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .68rem var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink2);background:var(--surf2)}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap;font-size:.92em}
+td .d{color:var(--ink2);font-size:.95em}
+.tag{display:inline-block;font:600 .64rem var(--mono);letter-spacing:.04em;border-radius:5px;padding:1px 6px;vertical-align:middle}
+.tw{color:#fff;background:var(--accent)}
+.tr{color:#fff;background:var(--ref)}
+.tg{color:#fff;background:var(--ok)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:16px 0}
+@media (max-width:640px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+.card h4{margin:0 0 6px;font:600 .95rem var(--sans)}
+.card h4 code{font-size:.92em}
+footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink2);font-size:.84rem}
+.selo{display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.selo span{font:600 .68rem var(--mono);color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="marca">Cérebro</div>
+  <div class="data">Modelagem completa · feat/devices · nov 2026</div>
+  <ol>
+    <li><a href="#visao">Visão geral</a></li>
+    <li><a href="#modelo">Modelo de dados</a></li>
+    <li><a href="#esquema">Esquema SQLite</a></li>
+    <li><a href="#store">Camada store</a></li>
+    <li><a href="#servico">Camada serviço</a></li>
+    <li><a href="#aux">Auxiliares</a></li>
+    <li><a href="#tools">Ferramentas</a></li>
+    <li><a href="#fluxos">Fluxos ilustrados</a></li>
+    <li><a href="#divida">Dívida e refactor</a></li>
+  </ol>
+</nav>
+
+<main>
+  <h1>O cérebro do agente — modelagem completa</h1>
+  <p class="lede">A estrutura real como está commitada hoje: o modelo de dados, o esquema do banco, todas as funções das duas camadas, os auxiliares e as ferramentas que o modelo chama. Documento de referência — tudo conferido no código, não de memória.</p>
+  <div class="selo"><span>domain/entities/cerebro.py</span><span>infrastructure/memory/cerebro_store.py</span><span>application/services/cerebro_service.py</span><span>application/tools/*</span></div>
+
+  <!-- 1 -->
+  <h2 id="visao"><span class="k">1 · visão geral</span>Três camadas, um arquivo SQLite</h2>
+  <p>O cérebro é o que o agente <strong>sabe</strong> (fatos) e o que ele <strong>viu acontecer</strong> (eventos). Mora inteiro em <code>data/cerebro.db</code> e se divide em três camadas, de dentro pra fora:</p>
+  <ul>
+    <li><strong>Modelo</strong> (<code>domain/entities/cerebro.py</code>) — quatro <em>dataclasses</em> puras (Entidade, Observação, Registro, Relação) + o alias do dono e a função <code>norm</code>. Sem SQL, sem regra.</li>
+    <li><strong>Store</strong> (<code>infrastructure/memory/cerebro_store.py</code>) — o SQLite: esquema, triggers, e os métodos que leem e gravam. Só persistência; não decide o que entra no contexto.</li>
+    <li><strong>Serviço</strong> (<code>application/services/cerebro_service.py</code>) — as regras: parse de data falada, o que vira NÚCLEO, como a busca é ranqueada, e a formatação das linhas que o modelo lê. É a fronteira que as ferramentas chamam.</li>
+  </ul>
+
+  <div class="dia" role="img" aria-label="Camadas: ferramentas chamam o serviço, que usa o store, que grava no SQLite">
+    <svg viewBox="0 0 820 220">
+      <rect class="b" x="16" y="20" width="788" height="46" rx="10"/>
+      <text class="ts" x="30" y="40">Ferramentas (o modelo chama)</text>
+      <text class="tm" x="30" y="57">remember · log · recall · query_log · remind</text>
+      <rect class="ba" x="16" y="86" width="788" height="56" rx="10"/>
+      <text class="ts" x="30" y="107">CerebroService — regras</text>
+      <text class="tm" x="30" y="125">lembrar() · recordar() · registrar() · consultar() · render_compact() · + API do painel</text>
+      <rect class="bc" x="16" y="160" width="560" height="46" rx="10"/>
+      <text class="ts" x="30" y="181">SqliteCerebroStore — persistência</text>
+      <text class="tm" x="30" y="198">observar · buscar · registrar · panorama · …</text>
+      <rect class="b" x="596" y="160" width="208" height="46" rx="10"/>
+      <text class="ts" x="610" y="181">data/cerebro.db</text>
+      <text class="tm" x="610" y="198">SQLite + FTS5 (WAL)</text>
+      <path class="fioa" d="M410 66 V84" marker-end="url(#a)"/>
+      <path class="fioa" d="M300 142 V158" marker-end="url(#a)"/>
+      <path class="fio" d="M576 183 H594" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pta" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O modelo só conversa com as ferramentas. Elas chamam o serviço; o serviço usa o store; o store fala com o SQLite. Cada camada só conhece a de baixo.</p>
+  </div>
+
+  <p>São <strong>dois tipos de conteúdo</strong>, separados de propósito (episódica × semântica):</p>
+  <div class="grid2">
+    <div class="card"><h4>Observação — o que <em>é verdade</em></h4><p class="d" style="margin:0;color:var(--ink2);font-size:.92rem">"o ombro dói acima de 60&nbsp;kg", "prefere resposta direta". Ligada a uma entidade, com categoria. Nunca é apagada: ao mudar, a velha ganha <code>invalido_em</code> e a nova aponta pra ela (<code>substitui</code>).</p></div>
+    <div class="card"><h4>Registro — o que <em>aconteceu</em></h4><p class="d" style="margin:0;color:var(--ink2);font-size:.92rem">"supino 3×12 com 20&nbsp;kg ontem 18:40". Tem data do acontecimento e números em JSON. Pode pertencer a uma <em>sessão</em> (o treino do dia) que agrupa vários.</p></div>
+  </div>
+
+  <!-- 2 -->
+  <h2 id="modelo"><span class="k">2 · modelo de dados</span>As quatro dataclasses</h2>
+  <p>Arquivo <code>domain/entities/cerebro.py</code>. Estruturas puras, com <code>slots=True</code>. A <code>Observacao</code> e o <code>Registro</code> trazem o nome da entidade <strong>desnormalizado</strong> (<code>entidade</code>, <code>tipo</code>) pra exibir sem <em>join</em>.</p>
+
+  <div class="dia" role="img" aria-label="Entidade no centro; dela saem observações, registros e relações">
+    <svg viewBox="0 0 820 280">
+      <rect class="ba" x="320" y="118" width="190" height="66" rx="10"/>
+      <text class="t" x="336" y="142">Entidade</text>
+      <text class="tm" x="336" y="160">id · tipo · nome</text><text class="tm" x="336" y="175">area</text>
+      <rect class="bc" x="40" y="30" width="220" height="76" rx="10"/>
+      <text class="t" x="56" y="53">Observacao</text>
+      <text class="tm" x="56" y="71">categoria · texto</text>
+      <text class="tm" x="56" y="87">valido_desde · invalido_em</text><text class="tm" x="56" y="101">substitui →</text>
+      <rect class="bc" x="40" y="196" width="220" height="76" rx="10"/>
+      <text class="t" x="56" y="219">Registro</text>
+      <text class="tm" x="56" y="237">tipo · quando · dados(JSON)</text>
+      <text class="tm" x="56" y="253">sessao · fim · eh_sessao</text><text class="tm" x="56" y="267">substitui →</text>
+      <rect class="b" x="568" y="118" width="220" height="66" rx="10"/>
+      <text class="t" x="584" y="142">Relacao</text>
+      <text class="tm" x="584" y="160">de —tipo→ para</text>
+      <text class="td" x="584" y="176">(entidade → entidade)</text>
+      <path class="fio" d="M320 150 C295 150 285 90 258 78" marker-end="url(#b)"/><text class="tc" x="268" y="112">1→N</text>
+      <path class="fio" d="M320 160 C295 180 285 210 258 224" marker-end="url(#b)"/><text class="tc" x="268" y="196">1→N</text>
+      <path class="fio" d="M510 151 H566" marker-end="url(#b)"/>
+      <rect class="ba" x="330" y="222" width="170" height="30" rx="8"/><text class="tm" x="344" y="241">DONO = "Você" → NÚCLEO</text>
+      <defs><marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">A entidade é o eixo. A entidade especial <code>DONO = "Você"</code> é o que vira o NÚCLEO — tudo que está nela entra em todo turno.</p>
+  </div>
+
+  <div class="tomo"><table>
+    <thead><tr><th>Dataclass</th><th>Campos</th><th>Papel</th></tr></thead>
+    <tbody>
+      <tr><td><code>Entidade</code></td><td><code>id · tipo · nome · area="geral"</code></td><td>uma "coisa" de que se fala (o dono, pessoa, exercício, disciplina, projeto)</td></tr>
+      <tr><td><code>Observacao</code></td><td><code>id · entidade_id · entidade · tipo · categoria · texto · valido_desde · invalido_em · substitui</code></td><td>uma frase verdadeira (semântica); histórico por <code>invalido_em</code>/<code>substitui</code></td></tr>
+      <tr><td><code>Registro</code></td><td><code>id · tipo · quando · entidade · dados · texto · sessao · fim · eh_sessao · substitui</code></td><td>um evento com data e números (episódica); sessão agrupa filhos</td></tr>
+      <tr><td><code>Relacao</code></td><td><code>de · tipo · para</code></td><td>ligação entre duas entidades</td></tr>
+    </tbody>
+  </table></div>
+  <p>Mais: <code>DONO = "Você"</code>, <code>TIPO_DONO = "dono"</code>, e a função <code>norm(s)</code> — forma canônica pra comparar nomes (minúsculo, sem acento, espaços colapsados): <code>"Supino  Reto" == "supino reto"</code>. É a chave de unicidade de tudo.</p>
+
+  <!-- 3 -->
+  <h2 id="esquema"><span class="k">3 · esquema SQLite</span>Seis tabelas, um índice de busca, um trigger</h2>
+  <p>O <code>_SCHEMA</code> do store. <code>PRAGMA journal_mode = WAL</code> (leitura e escrita simultâneas) e <code>foreign_keys = ON</code> por conexão.</p>
+
+  <div class="tomo"><table>
+    <thead><tr><th>Tabela</th><th>Colunas-chave</th><th>Para quê</th></tr></thead>
+    <tbody>
+      <tr><td><code>tipos</code></td><td><code>nome</code> (PK) · <code>area</code> · <code>criado_em</code></td><td>tipo normalizado → área (voce/academia/estudos/trabalho/…). Lista aberta: tipo novo entra como <code>geral</code>.</td></tr>
+      <tr><td><code>entidades</code></td><td><code>id</code> · <code>tipo</code>→tipos · <code>nome</code> · <code>nome_norm</code> (UNIQUE) · <code>criado_em</code> · <code>atualizado_em</code></td><td>uma linha por nome; <code>nome_norm</code> garante "um nome = uma entidade".</td></tr>
+      <tr><td><code>observacoes</code></td><td><code>id</code> · <code>entidade_id</code> · <code>categoria</code> · <code>texto</code> · <code>texto_norm</code> · <code>fonte</code> · <code>valido_desde</code> · <code>invalido_em</code> · <code>substitui</code>→self</td><td>os fatos. Nunca <code>DELETE</code> no fluxo normal: corrigir = <code>invalido_em</code> na velha + nova com <code>substitui</code>.</td></tr>
+      <tr><td><code>relacoes</code></td><td><code>de_id</code> · <code>tipo</code> · <code>para_id</code> · <code>invalido_em</code> · UNIQUE(de,tipo,para)</td><td>arestas entidade→entidade.</td></tr>
+      <tr><td><code>obs_fts</code></td><td>FTS5(<code>texto, categoria, entidade</code>)</td><td>índice de busca, <code>tokenize = unicode61 remove_diacritics 2</code> (acha sem acento).</td></tr>
+      <tr><td><code>registros</code></td><td><code>id</code> · <code>tipo</code> · <code>quando</code> · <code>entidade_id</code> · <code>dados</code>(JSON) · <code>texto</code> · <code>sessao</code>→self · <code>eh_sessao</code> · <code>fim</code> · <code>fonte</code> · <code>invalido_em</code> · <code>substitui</code>→self</td><td>os eventos. Uma sessão é um registro com <code>eh_sessao=1</code> e <code>fim=NULL</code> enquanto dura.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Índices e trigger</h3>
+  <ul>
+    <li><code>ix_obs_ent</code> em <code>observacoes(entidade_id, invalido_em)</code> — puxar as válidas de uma entidade.</li>
+    <li><code>ix_reg_tipo</code> em <code>registros(tipo, entidade_id, quando DESC)</code> e <code>ix_reg_sessao</code> em <code>registros(sessao)</code>.</li>
+    <li><strong>Trigger</strong> <code>obs_fts_ai</code> (AFTER INSERT em observacoes) — alimenta o índice FTS5 automaticamente, já com o nome da entidade.</li>
+  </ul>
+  <div class="nota"><b>Semente de tipos (<code>_TIPOS</code>):</b> um dicionário tipo→área que entra no <code>init()</code> (<code>INSERT OR IGNORE</code>): <code>dono→voce</code>, <code>exercicio/grupo muscular/treino→academia</code>, <code>disciplina/tema/instituicao→estudos</code>, <code>projeto/empresa/ferramenta/fluxo→trabalho</code>, <code>financa/conta/cartao→financas</code>, <code>meta/habito→pessoal</code>, <code>pessoa→pessoas</code>. O que não está aqui entra como <code>geral</code> e o painel reclassifica.</div>
+
+  <!-- 4 -->
+  <h2 id="store"><span class="k">4 · camada store</span><code>SqliteCerebroStore</code> — todos os métodos</h2>
+  <p>Assíncrono (<code>aiosqlite</code>). Cada método abre sua conexão via <code>_db()</code>. Os helpers de módulo <code>_obs(r)</code> e <code>_reg(r)</code> montam as dataclasses a partir das linhas, usando os <em>selects</em> fixos <code>_OBS_SELECT</code> / <code>_REG_SELECT</code> (já com o <em>join</em> na entidade).</p>
+
+  <h3>Infra e tipos/entidades</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>init()</code></td><td>cria o esquema, semeia <code>_TIPOS</code>, garante que o dono existe.</td></tr>
+      <tr><td><code>_tipo(db, tipo)</code></td><td>normaliza e garante o tipo; plural de um tipo conhecido vira o singular (<code>exercicios</code>→<code>exercicio</code>); tipo novo entra como <code>geral</code>.</td></tr>
+      <tr><td><code>achar_entidade(nome)</code></td><td>acha pela <code>nome_norm</code> (sem acento/maiúscula). Traz a área (join em tipos).</td></tr>
+      <tr><td><code>entidade(nome, tipo=None)</code></td><td>acha ou cria. Um nome = uma entidade: o tipo só vale na criação.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Observações</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>observacao(obs_id)</code></td><td>uma observação por id.</td></tr>
+      <tr><td><code>observar(entidade_id, categoria, texto, *, substitui, fonte)</code></td><td><strong>o coração da escrita.</strong> Retorna <code>(obs, op)</code> com <code>op ∈ {ADD, NOOP, CORRIGE}</code>. Detecta texto igual já válido (NOOP), valida que o <code>substitui</code> é da mesma entidade e ainda válido (senão <code>ValueError</code>), e encadeia a correção.</td></tr>
+      <tr><td><code>invalidar(obs_id)</code></td><td>marca <code>invalido_em</code> (some do contexto, fica no histórico).</td></tr>
+      <tr><td><code>da_entidade(entidade_id, *, incluir_antigas=False)</code></td><td>as observações de uma entidade, ordenadas por categoria/validade.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Relações · busca · registros</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>relacionar(de_id, tipo, para_id)</code></td><td><code>INSERT OR IGNORE</code> (UNIQUE evita duplicar). <code>ADD</code> ou <code>NOOP</code>.</td></tr>
+      <tr><td><code>relacoes(entidade_id)</code></td><td>as ligações nas duas direções (o que aponta e o que é apontado).</td></tr>
+      <tr><td><code>buscar(termos, limite=30)</code></td><td><strong>a recuperação.</strong> <code>OR</code> dos termos com prefixo (<code>"supin"*</code> acha <code>supino</code>), só válidas, <code>ORDER BY bm25(obs_fts)</code>. OR e não AND: a frase inteira raramente está toda numa observação.</td></tr>
+      <tr><td><code>registrar(tipo, quando, *, entidade_id, dados, texto, sessao, eh_sessao, substitui, fonte)</code></td><td>grava um evento; se <code>substitui</code>, invalida o velho antes.</td></tr>
+      <tr><td><code>registro(reg_id)</code> · <code>fechar_sessao(reg_id, fim)</code></td><td>um registro por id; fecha a sessão (grava <code>fim</code>).</td></tr>
+      <tr><td><code>sessao_aberta(desde)</code></td><td>a sessão em andamento mais recente aberta depois de <code>desde</code> (uma sessão esquecida aberta não vale pra sempre).</td></tr>
+      <tr><td><code>registros(*, tipo, entidade_id, sessao, desde, ate, limite=50)</code></td><td>lista válidos, filtros combináveis, mais recentes primeiro.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Painel (gestão pelo dono)</h3>
+  <p>O painel web mexe no cérebro pelas mesmas regras. Métodos de leitura e de gestão:</p>
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>tipos()</code> · <code>definir_area(tipo, area)</code></td><td>lista tipo→área; reclassifica a área de um tipo.</td></tr>
+      <tr><td><code>entidade_por_id(id)</code></td><td>entidade + área por id.</td></tr>
+      <tr><td><code>panorama()</code></td><td><strong>tudo que o grafo precisa numa ida:</strong> entidades com contagens de obs/reg, o último registro de cada, os dias com atividade (pro filtro de período), relações válidas e os totais.</td></tr>
+      <tr><td><code>relacoes_com_id(id)</code></td><td>relações com os ids (pra editar no painel).</td></tr>
+      <tr><td><code>renomear_entidade(id, nome)</code></td><td>renomeia e <strong>acompanha o índice FTS</strong> (o nome está em cada observação indexada).</td></tr>
+      <tr><td><code>mudar_tipo(id, tipo)</code></td><td>troca o tipo da entidade.</td></tr>
+      <tr><td><code>apagar_entidade(id)</code></td><td>apaga DE VEZ a entidade e o que é dela (obs, relações, registros); desarma os <code>substitui</code>/<code>sessao</code> que apontavam pros apagados.</td></tr>
+      <tr><td><code>apagar_observacao(id)</code> · <code>apagar_relacao(id)</code> · <code>invalidar_registro(id)</code></td><td>remoções/invalidção pontuais (o <code>apagar_observacao</code> some até do histórico — é pra lixo).</td></tr>
+      <tr><td><code>observacoes_desde(desde)</code></td><td>pra tela Revisar: tudo que entrou ou foi corrigido desde uma data.</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- 5 -->
+  <h2 id="servico"><span class="k">5 · camada serviço</span><code>CerebroService</code> — regras e os cinco usos</h2>
+  <p>Mantém um <code>_cache</code> por fala (o bloco de memória de cada turno) que é limpo em toda escrita. Os cinco usos principais:</p>
+
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>Ferramenta</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>lembrar(texto, categoria, entidade, tipo, substitui, relacao, com, fonte)</code></td><td><code>remember</code></td><td>grava observação (+ relação opcional); devolve a linha curta. No <code>ADD</code> avisa de <strong>parecidas</strong>; no erro de <code>substitui</code>, lista os #id válidos.</td></tr>
+      <tr><td><code>recordar(busca, entidade, incluir_antigas)</code></td><td><code>recall</code></td><td>busca por palavras <em>ou</em> tudo de uma entidade (com ligações, registros recentes e a cadeia <code>antes:</code>).</td></tr>
+      <tr><td><code>registrar(acao, tipo, assunto, dados, texto, quando, corrige, fonte)</code></td><td><code>log</code></td><td>abrir/registrar/fechar sessão; entra na sessão aberta; parse de data falada; resumo no fechar.</td></tr>
+      <tr><td><code>consultar(tipo, assunto, ultimo, desde, ate, limite)</code></td><td><code>query_log</code></td><td>o diário por período ou só a última vez; sessões vêm com os filhos.</td></tr>
+      <tr><td><code>render_compact(query)</code></td><td>— (todo turno)</td><td>monta o bloco injetado: Agora + sessão em andamento + NÚCLEO + relevantes.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Métodos internos (as regras finas)</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Método</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>nome_entidade(nome)</code></td><td>"você"/"eu"/vazio → o dono; qualquer outro nome fica como veio.</td></tr>
+      <tr><td><code>_promover(ent, tipo)</code></td><td>entidade criada sem tipo (ex.: alvo de ligação) fica <code>geral</code>; quando o tipo aparece, ela ganha.</td></tr>
+      <tr><td><code>_parecidas(nova)</code></td><td>observações da mesma entidade que talvez digam o mesmo (mesma categoria ou ≥2 palavras em comum). Determinístico e barato — <strong>quem decide se substitui é o modelo</strong>.</td></tr>
+      <tr><td><code>_antes(o, maximo=3)</code></td><td>a cadeia de versões anteriores (o que esta observação corrigiu) — responde "o que mudou?" sem o modelo pedir o histórico.</td></tr>
+      <tr><td><code>_ranquear(texto, limite, excluir)</code></td><td>o ranqueamento: <code>buscar()</code> por BM25, depois reordena por <strong>0,7·relevância + 0,3·recência</strong> (meia-vida ~30 dias).</td></tr>
+      <tr><td><code>_sessao_aberta()</code> / <code>sessao_aberta()</code></td><td>a sessão em andamento, limitada a <code>_SESSAO_MAX_H</code> (6 h).</td></tr>
+      <tr><td><code>_memoria(chave)</code></td><td>monta NÚCLEO (poda por <code>_NUCLEO_MAX_CHARS</code>, cai o mais velho) + relevantes; cacheado por fala.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>API do painel (mesmas regras, pelo dono)</h3>
+  <p>Métodos que a API web expõe: <code>panorama()</code>, <code>ficha(ent_id)</code> (entidade + observações + relações + registros + métricas numéricas), <code>criar_entidade</code>, <code>editar_entidade</code>, <code>apagar_entidade</code> (barra apagar "Você"), <code>nova_observacao</code>, <code>invalidar_observacao</code>, <code>apagar_observacao</code>, <code>nova_relacao</code>, <code>apagar_relacao</code>, <code>lista_registros</code>, <code>invalidar_registro</code>, <code>revisar(dias)</code> e <code>busca_painel(q)</code> (observações ranqueadas + entidades por nome).</p>
+
+  <!-- 6 -->
+  <h2 id="aux"><span class="k">6 · auxiliares</span>Constantes e funções de módulo</h2>
+  <p>No topo do serviço, fora da classe — é onde moram a linguagem (datas, stopwords) e a formatação de leitura.</p>
+
+  <h3>Constantes</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Nome</th><th>Valor / papel</th></tr></thead>
+    <tbody>
+      <tr><td><code>_ALIAS_DONO</code></td><td>as formas que o modelo usa pro dono: voce, eu, dono, usuario, mim, meu, minha…</td></tr>
+      <tr><td><code>_STOP</code></td><td>as stopwords em PT que a busca ignora (artigos, pronomes, verbos vazios, saudações).</td></tr>
+      <tr><td><code>_DIAS</code></td><td><code>["seg","ter","qua","qui","sex","sáb","dom"]</code> — rótulo do dia.</td></tr>
+      <tr><td><code>_SESSAO_MAX_H = 6</code></td><td>sessão aberta há mais que isso = esquecida, não "em andamento".</td></tr>
+      <tr><td><code>_ASSUNTO_TIPO</code></td><td>tipo de registro → tipo da entidade-assunto nova: <code>serie→exercicio</code>, <code>treino→grupo muscular</code>, <code>estudo→disciplina</code>, <code>exercicios→tema</code>.</td></tr>
+      <tr><td><code>_NUCLEO_MAX_CHARS = 1600</code></td><td>≈ 400 tokens: o teto do NÚCLEO (vai em todo turno).</td></tr>
+      <tr><td><code>_RELEVANTES = 6</code></td><td>quantas observações a fala atual puxa além do núcleo.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Linguagem (parse de data) — o determinismo que tira a conta do modelo</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Função</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>norm(s)</code> <span class="tag tg">domain</span></td><td>forma canônica (minúsculo, sem acento, espaços colapsados). A chave de comparação de tudo.</td></tr>
+      <tr><td><code>termos(texto, maximo=12)</code></td><td>palavras que valem busca: sem acento, ≥3 letras, sem stopword, sem repetir.</td></tr>
+      <tr><td><code>quando_de(texto, agora=None)</code></td><td><strong>data falada → timestamp.</strong> Aceita vazio(=agora), hoje/ontem/anteontem [HH:MM], DD/MM[/AAAA], AAAA-MM-DD, HH:MM. Sem hora → meio-dia (não cai no dia errado por fuso). Inválido → <code>ValueError</code> (a tool explica).</td></tr>
+      <tr><td><code>desde_de(texto, agora=None)</code></td><td>período falado → início: hoje · semana (7 d) · mes (dia 1) · ultimo mes (30 d) · ano · ou uma data.</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>Formatação de leitura — as linhas que o modelo e o painel leem</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Função</th><th>O que faz</th></tr></thead>
+    <tbody>
+      <tr><td><code>_quando(ts)</code> · <code>_dia(ts)</code> · <code>_hora(ts)</code></td><td>timestamp → <code>dd/mm/aa</code>, <code>"qua 29/10"</code>, <code>"18:40"</code>.</td></tr>
+      <tr><td><code>_num(v)</code></td><td>número limpo (<code>16.0</code>→<code>16</code>).</td></tr>
+      <tr><td><code>_linha(o, *, com_entidade, com_data)</code></td><td>uma observação → <code>- #id [categoria] texto</code> (+ entidade/data/[até …] conforme o caso).</td></tr>
+      <tr><td><code>fmt_dados(d, texto)</code></td><td><strong>números de um registro por extenso</strong> (é o que o agente FALA): <code>{series:4,reps:6,carga_kg:16}</code> + "cada lado" → "4 séries de 6 repetições com 16 kg cada lado (32 kg no total)". Trata também acertos/total do tutor, duração, distância.</td></tr>
+      <tr><td><code>_reg_linha(r, *, com_dia, recuo)</code></td><td>um registro → linha completa (dia/hora, tipo, assunto, <code>fmt_dados</code>, comentário, #id); marca "(em andamento)" e o intervalo da sessão.</td></tr>
+    </tbody>
+  </table></div>
+  <div class="nota"><b>Por que isto é "cheiro de dívida":</b> <code>fmt_dados</code>, <code>_reg_linha</code> e <code>_linha</code> são <strong>camada de apresentação</strong> morando no serviço. Funciona, mas o certo seria um <em>render</em> separado. É a dívida estrutural anotada na seção 9.</div>
+
+  <!-- 7 -->
+  <h2 id="tools"><span class="k">7 · ferramentas</span>A superfície que o modelo chama</h2>
+  <p>Cinco ferramentas. Cada uma tem schema Pydantic (o que o modelo preenche) e uma <code>description</code> que ensina quando usar. Todas gravam a <code>fonte = session_id</code> (dá pra desfazer por sessão — é o que o ensaio usa).</p>
+
+  <div class="grid2">
+    <div class="card"><h4><code>remember</code> <span class="tag tw">escreve</span></h4>
+      <p class="d" style="color:var(--ink2);font-size:.9rem;margin:0">Grava UMA observação sobre o dono ou algo da vida dele. Campos: <code>texto</code>, <code>categoria</code>, <code>entidade</code>="Você", <code>tipo</code> (só se nova), <code>substitui</code> (#id a corrigir), <code>relacao</code>+<code>com</code>. Regra no prompt: <em>não diga que guardou sem chamar</em>.</p></div>
+    <div class="card"><h4><code>log</code> <span class="tag tw">escreve</span></h4>
+      <p class="d" style="color:var(--ink2);font-size:.9rem;margin:0">Registra o que ACONTECEU. <code>acao</code> ∈ abrir/registrar/fechar; <code>tipo</code>, <code>assunto</code>, <code>dados</code> (series/reps/carga_kg/…), <code>texto</code>, <code>quando</code>, <code>corrige</code>. É o par episódico do <code>remember</code>.</p></div>
+    <div class="card"><h4><code>recall</code> <span class="tag tr">lê</span></h4>
+      <p class="d" style="color:var(--ink2);font-size:.9rem;margin:0">Consulta o que se sabe. <code>busca</code> (palavras, OR) <em>ou</em> <code>entidade</code> (tudo de um nome) + <code>incluir_antigas</code> (o histórico). Não achou → diz que não sabe, nunca completa de cabeça.</p></div>
+    <div class="card"><h4><code>query_log</code> <span class="tag tr">lê</span></h4>
+      <p class="d" style="color:var(--ink2);font-size:.9rem;margin:0">Consulta o diário. <code>tipo</code>, <code>assunto</code>, <code>ultimo</code>, <code>desde</code>, <code>ate</code>. Responde só com datas/números exatos; vazio → diz que não tem registro.</p></div>
+    <div class="card"><h4><code>remind</code> <span class="tag tw">escreve</span></h4>
+      <p class="d" style="color:var(--ink2);font-size:.9rem;margin:0">Lembrete que AVISA (notificação nos devices). <code>acao</code> ∈ criar/listar/cancelar; <code>texto</code>, <code>quando</code>, <code>repetir</code>, <code>antes</code>, <code>id</code>. Store próprio (<code>lembrete_store</code>) + agendador no servidor.</p></div>
+  </div>
+
+  <!-- 8 -->
+  <h2 id="fluxos"><span class="k">8 · fluxos ilustrados</span>O que acontece de ponta a ponta</h2>
+
+  <h3>Salvar uma observação — <code>observar()</code> decide ADD / NOOP / CORRIGE</h3>
+  <div class="dia" role="img" aria-label="Decisão do observar: igual já válido vira NOOP; com substitui encadeia CORRIGE; senão ADD com aviso de parecidas">
+    <svg viewBox="0 0 820 250">
+      <rect class="ba" x="16" y="26" width="150" height="44" rx="9"/><text class="ts" x="30" y="46">remember</text><text class="tm" x="30" y="62">lembrar()</text>
+      <rect class="b" x="210" y="26" width="160" height="44" rx="9"/><text class="ts" x="224" y="46">texto já existe</text><text class="tm" x="224" y="62">(válido, igual)?</text>
+      <path class="fioa" d="M166 48 H208" marker-end="url(#a)"/>
+      <!-- sim -> noop -->
+      <rect class="bc" x="420" y="12" width="150" height="34" rx="8"/><text class="tm" x="434" y="33">NOOP (já sabia)</text>
+      <path class="fio" d="M370 40 C392 40 398 30 418 29" marker-end="url(#a)"/><text class="tc" x="378" y="24">sim</text>
+      <!-- não -> substitui? -->
+      <rect class="b" x="420" y="88" width="160" height="44" rx="9"/><text class="ts" x="434" y="108">veio substitui?</text><text class="tm" x="434" y="124">#id válido mesma ent.</text>
+      <path class="fio" d="M300 70 C330 90 360 100 418 108" marker-end="url(#a)"/><text class="tc" x="318" y="92">não</text>
+      <!-- substitui sim -> corrige -->
+      <rect class="bw" x="624" y="80" width="170" height="40" rx="8"/><text class="ts" x="638" y="104">CORRIGE (encadeia)</text>
+      <path class="fio" d="M580 102 H622" marker-end="url(#a)"/><text class="tc" x="590" y="96">sim</text>
+      <!-- substitui não -> add + parecidas -->
+      <rect class="bc" x="624" y="150" width="170" height="54" rx="8"/><text class="ts" x="638" y="172">ADD</text><text class="tm" x="638" y="190">+ aviso de parecidas</text>
+      <path class="fio" d="M500 132 C540 150 580 160 622 172" marker-end="url(#a)"/><text class="tc" x="516" y="156">não</text>
+      <rect class="b" x="624" y="214" width="170" height="30" rx="8"/><text class="tm" x="638" y="233">#id inválido → ValueError</text>
+      <path class="fio" d="M500 132 C520 180 540 210 622 228" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O <code>_parecidas()</code> (determinístico) acompanha o ADD com um aviso; a decisão de substituir fica com o modelo. Erro de <code>substitui</code> não grava nada e devolve os #id válidos pra ele acertar.</p>
+  </div>
+
+  <h3>Todo turno — <code>render_compact()</code> monta o bloco MEMÓRIA</h3>
+  <div class="dia" role="img" aria-label="render_compact junta Agora, sessão aberta, núcleo do dono e relevantes da fala">
+    <svg viewBox="0 0 820 220">
+      <rect class="b" x="16" y="90" width="150" height="44" rx="9"/><text class="ts" x="30" y="110">fala do dono</text><text class="tm" x="30" y="126">query</text>
+      <rect class="bc" x="220" y="16" width="200" height="34" rx="8"/><text class="tm" x="234" y="37">Agora + sessão aberta</text>
+      <rect class="ba" x="220" y="62" width="200" height="40" rx="8"/><text class="ts" x="234" y="80">NÚCLEO (o dono)</text><text class="tm" x="234" y="96">poda ~1600 chars</text>
+      <rect class="bc" x="220" y="114" width="200" height="40" rx="8"/><text class="ts" x="234" y="132">6 relevantes</text><text class="tm" x="234" y="148">_ranquear(fala)</text>
+      <rect class="b" x="470" y="62" width="150" height="48" rx="9"/><text class="ts" x="484" y="82">_memoria()</text><text class="tm" x="484" y="99">cache por fala</text>
+      <rect class="ba" x="664" y="62" width="140" height="48" rx="9"/><text class="ts" x="678" y="82">bloco MEMÓRIA</text><text class="tm" x="678" y="99">→ contexto</text>
+      <path class="fio" d="M166 112 C190 112 196 34 218 33" marker-end="url(#a)"/>
+      <path class="fioa" d="M166 112 C190 100 196 84 218 82" marker-end="url(#a)"/>
+      <path class="fio" d="M166 112 C190 124 196 132 218 134" marker-end="url(#a)"/>
+      <path class="fio" d="M420 82 H468" marker-end="url(#a)"/>
+      <path class="fioa" d="M620 86 H662" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">Agora e a sessão mudam com o relógio (ficam fora do cache); o NÚCLEO e os relevantes são cacheados por fala. É a nossa <em>working memory</em>.</p>
+  </div>
+
+  <h3>Ranqueamento — como 6 relevantes são escolhidos</h3>
+  <div class="pre">pool = store.buscar(termos(fala))        <span class="c"># BM25, OR com prefixo, só válidas</span>
+score(i, o) = 0.7 · (1 − i/n)            <span class="c"># relevância: posição no ranking BM25</span>
+            + 0.3 · exp(−Δt / 30 dias)    <span class="c"># recência: meia-vida ~3 semanas</span>
+relevantes = top-6 por score, excluindo o que já está no núcleo</div>
+
+  <h3>Sessão de treino — abrir / registrar / fechar</h3>
+  <div class="dia" role="img" aria-label="Linha do tempo de uma sessão: abrir cria a sessão, séries entram nela, fechar resume">
+    <svg viewBox="0 0 820 150">
+      <line x1="40" y1="80" x2="780" y2="80" stroke="var(--line)" stroke-width="2"/>
+      <rect class="ba" x="40" y="56" width="150" height="44" rx="9"/><text class="ts" x="54" y="76">log(abrir)</text><text class="tm" x="54" y="92">treino · Peito</text>
+      <rect class="bc" x="250" y="56" width="120" height="44" rx="9"/><text class="tm" x="264" y="76">log(serie)</text><text class="tm" x="264" y="92">3×12 20kg</text>
+      <rect class="bc" x="400" y="56" width="120" height="44" rx="9"/><text class="tm" x="414" y="76">log(serie)</text><text class="tm" x="414" y="92">3×10 22kg</text>
+      <rect class="bw" x="600" y="56" width="150" height="44" rx="9"/><text class="ts" x="614" y="76">log(fechar)</text><text class="tm" x="614" y="92">resume os filhos</text>
+      <path class="fio" d="M190 78 H248" marker-end="url(#a)"/>
+      <path class="fio" d="M520 78 H598" marker-end="url(#a)"/>
+      <text class="tc" x="250" y="128">as séries entram sozinhas na sessão aberta (sessao = #id)</text>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O <code>abrir</code> cria um registro com <code>eh_sessao=1</code>, <code>fim=NULL</code>. Cada <code>serie</code> aponta pra ela em <code>sessao</code>. O <code>fechar</code> grava o <code>fim</code> e resume. Abrir outra sem fechar fecha a anterior.</p>
+  </div>
+
+  <!-- 9 -->
+  <h2 id="divida"><span class="k">9 · dívida e refactor em andamento</span>O que está torto, de propósito ou não</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Ponto</th><th>Situação</th></tr></thead>
+    <tbody>
+      <tr><td>Determinismo em data/número (<code>quando_de</code>, <code>desde_de</code>)</td><td><span class="tag tg">defensável</span> o modelo erra data; a conta vai pro código.</td></tr>
+      <tr><td>Formatação no serviço (<code>fmt_dados</code>, <code>_reg_linha</code>, <code>_linha</code>)</td><td><span class="tag" style="color:var(--ink);background:var(--warn)">cheiro</span> apresentação é view; devia ser render separado.</td></tr>
+      <tr><td>Serviço faz tudo (parse + negócio + ranqueio + formatação)</td><td><span class="tag" style="color:var(--ink);background:var(--warn)">God service</span> separar em camadas quando estabilizar.</td></tr>
+      <tr><td>Sem dedup semântico ("Supino reto" ≠ "Supino máquina reto")</td><td><span class="tag tw">lacuna</span> hoje vira entidade nova; <code>_parecidas</code> só avisa, não funde.</td></tr>
+      <tr><td>Sem cardinalidade / importância / reflexão / TTL</td><td><span class="tag tw">lacuna</span> ranqueio só relevância+recência; nada expira.</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="nota"><b>Refactor em andamento (não neste branch):</b> uma <code>recall</code> única (<code>buscar_tudo</code> agrupando por assunto com "N assunto(s)" → 1 age / 2+ pergunta, unindo recall+query_log) foi <strong>medida e aprovada no ensaio</strong> e existe como cópia de trabalho no Windows, mas <strong>não está commitada em <code>feat/devices</code></strong> (o plano foi commitar o estado atual antes do refactor). Este documento descreve o que está commitado: <code>recall</code> com <code>busca</code>/<code>entidade</code> e o <code>query_log</code> ainda separados.</div>
+
+  <footer>
+    Modelagem do cérebro · conferida no código em 12/11/2026 · branch <code>feat/devices</code>.<br>
+    Fontes: <code>domain/entities/cerebro.py</code> · <code>infrastructure/memory/cerebro_store.py</code> · <code>application/services/cerebro_service.py</code> · <code>application/tools/{remember,log,recall,query_log,remind}.py</code>.
+  </footer>
+</main>
+</div>
+</body>
+</html>

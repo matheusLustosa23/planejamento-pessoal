@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Memória do Dono — as 5 etapas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <span class="marca">Memória do Dono</span>
+    <span>· levantamento · nov 2026</span>
+    <span class="trilha">
+      <span class="at">◆</span>
+      <a href="etapa1-estruturar.html">1</a>
+      <a href="etapa2-salvar.html">2</a>
+      <a href="etapa3-buscar.html">3</a>
+      <a href="etapa4-atualizar.html">4</a>
+      <a href="etapa5-apagar.html">5</a>
+    </span>
+  </div>
+
+  <div class="hero">
+    <div class="etapa-tag">o mapa do terreno</div>
+    <h1>A memória de um agente, em 5 etapas</h1>
+    <p class="lede">O que a área sabe hoje (até nov/2026) sobre memória de agente, e como o <strong>nosso cérebro</strong> faz cada coisa — etapa por etapa, cada uma com a ilustração e a comparação "como fazem × como fazemos". Não é o plano: é o mapa para embasá-lo.</p>
+    <div class="selo"><span>pesquisa web · nov/2026</span><span>código do nosso cérebro</span><span>sem decisões fechadas</span></div>
+  </div>
+
+  <h2><span class="k">por que dividir assim</span>A memória não é uma coisa — são cinco momentos</h2>
+  <p>Juntando as referências, toda memória madura passa por um <strong>ciclo de vida</strong>, e cada momento é uma decisão de projeto com escolhas diferentes. Em vez de um documento único e denso, cada etapa vira uma página: primeiro a ilustração do que é, depois <strong>como os sistemas de referência fazem</strong> e <strong>como nós fazemos</strong>, lado a lado, e o veredito honesto (acerto, cheiro de dívida ou lacuna).</p>
+
+  <div class="dia" role="img" aria-label="Ciclo de vida da memória: estruturar, salvar, buscar, atualizar, apagar">
+    <svg viewBox="0 0 820 150">
+      <!-- 5 estações em linha, ligadas -->
+      <g>
+        <circle class="ba" cx="80" cy="62" r="30"/><text class="tc" x="80" y="66" text-anchor="middle">1</text>
+        <text class="ts" x="80" y="118" text-anchor="middle">Estruturar</text>
+        <text class="td" x="80" y="134" text-anchor="middle">onde mora</text>
+      </g>
+      <g>
+        <circle class="ba" cx="240" cy="62" r="30"/><text class="tc" x="240" y="66" text-anchor="middle">2</text>
+        <text class="ts" x="240" y="118" text-anchor="middle">Salvar</text>
+        <text class="td" x="240" y="134" text-anchor="middle">extrair + gravar</text>
+      </g>
+      <g>
+        <circle class="ba" cx="400" cy="62" r="30"/><text class="tc" x="400" y="66" text-anchor="middle">3</text>
+        <text class="ts" x="400" y="118" text-anchor="middle">Buscar</text>
+        <text class="td" x="400" y="134" text-anchor="middle">achar o que importa</text>
+      </g>
+      <g>
+        <circle class="ba" cx="560" cy="62" r="30"/><text class="tc" x="560" y="66" text-anchor="middle">4</text>
+        <text class="ts" x="560" y="118" text-anchor="middle">Atualizar</text>
+        <text class="td" x="560" y="134" text-anchor="middle">quando muda</text>
+      </g>
+      <g>
+        <circle class="ba" cx="720" cy="62" r="30"/><text class="tc" x="720" y="66" text-anchor="middle">5</text>
+        <text class="ts" x="720" y="118" text-anchor="middle">Apagar</text>
+        <text class="td" x="720" y="134" text-anchor="middle">esquecer/consolidar</text>
+      </g>
+      <path class="fio" d="M110 62 H210" marker-end="url(#s)"/>
+      <path class="fio" d="M270 62 H370" marker-end="url(#s)"/>
+      <path class="fio" d="M430 62 H530" marker-end="url(#s)"/>
+      <path class="fio" d="M590 62 H690" marker-end="url(#s)"/>
+      <defs><marker id="s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">O ciclo. As etapas 1–3 são o dia a dia; 4 e 5 são onde os sistemas se diferenciam de verdade — e onde estão as nossas lacunas conhecidas.</p>
+  </div>
+
+  <div class="nota"><b>Contexto nosso, vale para tudo:</b> agente local, modelo <code>qwen35-27b</code> numa GPU só, cérebro em SQLite no servidor. Duas restrições moldam cada etapa: o modelo é <strong>fraco em data e conta</strong> (empurramos isso para o código) e a GPU está <strong>ocupada com o LLM</strong> (embeddings, se vierem, rodam na CPU). E uma ressalva: muitos números dos fornecedores são <strong>auto-reportados</strong> e alguns benchmarks estão em disputa — trato como indicativo.</p>
+
+  <h2><span class="k">comece por aqui</span>As cinco páginas</h2>
+  <div class="cards">
+    <a href="etapa1-estruturar.html">
+      <div class="num">ETAPA 1</div><div class="nome">Estruturar</div>
+      <div class="desc">Onde a memória mora: texto solto, blocos, vetor, grafo — ou tabelas tipadas como as nossas.</div>
+      <div class="mini"><svg viewBox="0 0 200 56" aria-hidden="true"><rect class="b" x="6" y="18" width="40" height="22" rx="5"/><rect class="ba" x="58" y="10" width="46" height="18" rx="5"/><rect class="bc" x="58" y="34" width="46" height="16" rx="5"/><rect class="b" x="120" y="8" width="40" height="16" rx="4"/><rect class="b" x="120" y="30" width="40" height="18" rx="4"/><path class="fio" d="M46 29 H56"/><path class="fio" d="M104 24 C112 24 112 16 118 16"/><path class="fio" d="M104 40 C112 40 112 38 118 38"/></svg></div>
+    </a>
+    <a href="etapa2-salvar.html">
+      <div class="num">ETAPA 2</div><div class="nome">Salvar</div>
+      <div class="desc">Quem extrai o fato — o LLM ou o código? E quem resolve o conflito, na escrita ou na leitura?</div>
+      <div class="mini"><svg viewBox="0 0 200 56" aria-hidden="true"><rect class="b" x="6" y="18" width="52" height="20" rx="5"/><text class="tm" x="14" y="32">fala</text><rect class="ba" x="80" y="10" width="40" height="16" rx="4"/><rect class="bc" x="80" y="32" width="40" height="16" rx="4"/><rect class="b" x="150" y="18" width="44" height="20" rx="5"/><path class="fioa" d="M58 28 H78"/><path class="fio" d="M120 18 C132 18 138 28 148 28"/><path class="fio" d="M120 40 C132 40 138 28 148 28"/></svg></div>
+    </a>
+    <a href="etapa3-buscar.html">
+      <div class="num">ETAPA 3</div><div class="nome">Buscar</div>
+      <div class="desc">Achar o relevante: lexical (BM25), vetorial, híbrido com reranking — e a nossa <code>recall</code> única.</div>
+      <div class="mini"><svg viewBox="0 0 200 56" aria-hidden="true"><circle class="ba" cx="30" cy="28" r="14"/><path class="fioa" d="M40 38 L54 50"/><rect class="b" x="78" y="10" width="110" height="10" rx="3"/><rect class="bc" x="78" y="24" width="86" height="10" rx="3"/><rect class="b" x="78" y="38" width="64" height="10" rx="3"/></svg></div>
+    </a>
+    <a href="etapa4-atualizar.html">
+      <div class="num">ETAPA 4</div><div class="nome">Atualizar</div>
+      <div class="desc">Quando um fato muda: apagar e reescrever, ou guardar a sucessão com data de validade?</div>
+      <div class="mini"><svg viewBox="0 0 200 56" aria-hidden="true"><rect class="b" x="10" y="20" width="60" height="18" rx="5"/><text class="tm" x="18" y="33">antigo</text><rect class="ba" x="120" y="20" width="62" height="18" rx="5"/><text class="tm" x="128" y="33">novo</text><path class="fioa" d="M72 29 H118" marker-end="url(#u)"/><defs><marker id="u" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pta" d="M0 0L10 5L0 10z"/></marker></defs></svg></div>
+    </a>
+    <a href="etapa5-apagar.html">
+      <div class="num">ETAPA 5</div><div class="nome">Apagar</div>
+      <div class="desc">Esquecer de propósito: expiração (TTL), importância e reflexão — ou nunca apagar, só invalidar.</div>
+      <div class="mini"><svg viewBox="0 0 200 56" aria-hidden="true"><rect class="b" x="12" y="14" width="40" height="28" rx="5" opacity=".4"/><rect class="b" x="60" y="14" width="40" height="28" rx="5" opacity=".7"/><rect class="ba" x="108" y="14" width="40" height="28" rx="5"/><path class="fio" d="M156 28 H186" marker-end="url(#f)"/><defs><marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs></svg></div>
+    </a>
+  </div>
+
+  <h2><span class="k">fontes</span>Referências consultadas</h2>
+  <p class="fontes">Pesquisa web em 10/11/2026. Números de desempenho são, em geral, auto-reportados e alguns disputados — tratados como indicativos. Cada etapa cita, no texto, as fontes que a embasam <span class="tagref">como esta</span>.</p>
+  <ul class="fontes">
+    <li>Memory in the Age of AI Agents: A Survey (taxonomia Formas/Funções/Dinâmicas) — <a href="https://arxiv.org/pdf/2512.13564">arXiv 2512.13564</a></li>
+    <li>CoALA — Cognitive Architectures for Language Agents (working/episódica/semântica/procedural) — <a href="https://arxiv.org/pdf/2309.02427">arXiv 2309.02427</a></li>
+    <li>Generative Agents (memory stream, relevância+recência+importância, reflexão) — <a href="https://arxiv.org/pdf/2304.03442v2">arXiv 2304.03442</a></li>
+    <li>Letta / MemGPT — docs oficiais (core/recall/archival, sleep-time) — <a href="https://docs.letta.com/guides/agents/architectures/memgpt">docs.letta.com</a></li>
+    <li>mem0 vs Zep (arquitetura, grafo temporal, dedup) — <a href="https://vectorize.io/articles/mem0-vs-zep">vectorize.io</a> · <a href="https://atlan.com/know/best-ai-agent-memory-frameworks-2026/">atlan.com</a></li>
+    <li>REAL — grafo com cardinalidade / validade — <a href="https://arxiv.org/pdf/2606.10694">arXiv 2606.10694</a></li>
+    <li>Extração ciente de contexto, conflito write-time × read-time — <a href="https://arxiv.org/pdf/2604.19771">arXiv 2604.19771</a> · <a href="https://www.memoryplugin.com/wiki/updates-and-conflicts.html">The Field Guide to AI Memory</a></li>
+    <li>Busca híbrida + reranking (BM25 + vetor + RRF) — <a href="https://denser.ai/blog/hybrid-search-for-rag/">denser.ai</a> · <a href="https://tianpan.co/blog/2026-04-12-hybrid-search-production-bm25-dense-embeddings">tianpan.co</a></li>
+    <li>Estado de 2026 / benchmarks (LoCoMo saturando, BEAM, agentic) — <a href="https://mem0.ai/blog/ai-memory-benchmarks-in-2026">mem0.ai</a> · <a href="https://openchamber.dev/blog/agent-memory-research/">openchamber.dev</a></li>
+    <li>Coletânea de técnicas (notebooks) — <a href="https://github.com/NirDiamant/Agent_Memory_Techniques">NirDiamant/Agent_Memory_Techniques</a></li>
+  </ul>
+
+  <footer>
+    Levantamento para embasar o plano de evolução da memória do dono · agente <code>feat/devices</code> · nov 2026.<br>
+    Versão anterior, em documento único: <a href="../memoria-do-dono-levantamento.html">memoria-do-dono-levantamento.html</a>.
+  </footer>
+
+</div>
+</body>
+</html>

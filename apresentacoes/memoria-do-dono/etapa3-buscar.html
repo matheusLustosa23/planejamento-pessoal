@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>3 · Buscar — Memória do Dono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <a class="home" href="index.html">◆ Memória do Dono</a>
+    <span class="trilha">
+      <a href="index.html" title="Início">◆</a>
+      <a href="etapa1-estruturar.html">1</a>
+      <a href="etapa2-salvar.html">2</a>
+      <span class="at">3</span>
+      <a href="etapa4-atualizar.html">4</a>
+      <a href="etapa5-apagar.html">5</a>
+    </span>
+  </div>
+
+  <div class="etapa-tag">Etapa 3 de 5</div>
+  <h1>Buscar: achar o que importa</h1>
+  <p class="lede">Guardar é fácil; o difícil é trazer <strong>a lembrança certa</strong> no momento certo, sem lotar o contexto. É a etapa mais madura da literatura — e onde temos a nossa maior lacuna assumida (embeddings) e a nossa maior vantagem (perguntar quando há dúvida).</p>
+
+  <h2><span class="k">como fazem</span>Buscar largo, reordenar estreito</h2>
+  <p>O padrão de 2025–26 é estável: <strong>busca híbrida, depois reranking</strong> <span class="tagref">denser.ai · tianpan.co</span>.</p>
+  <div class="dia" role="img" aria-label="Funil de recuperação: híbrido BM25 e vetor, fusão RRF, pool largo, dedup MMR, reranker, top-5">
+    <svg viewBox="0 0 820 220">
+      <rect class="b" x="16" y="30" width="150" height="34" rx="7"/><text class="ts" x="30" y="51">BM25 (lexical)</text>
+      <rect class="bc" x="16" y="120" width="150" height="34" rx="7"/><text class="ts" x="30" y="141">vetor (embeddings)</text>
+      <rect class="ba" x="220" y="74" width="120" height="40" rx="8"/><text class="ts" x="234" y="92">fusão RRF</text><text class="tm" x="234" y="107">sem rótulos</text>
+      <rect class="b" x="392" y="66" width="130" height="56" rx="8"/><text class="ts" x="406" y="88">pool largo</text><text class="tm" x="406" y="104">top-100 + MMR</text>
+      <rect class="ba" x="566" y="70" width="120" height="48" rx="8"/><text class="ts" x="580" y="90">reranker</text><text class="tm" x="580" y="106">cross-encoder</text>
+      <rect class="bc" x="724" y="78" width="80" height="32" rx="7"/><text class="ts" x="738" y="98">top-5</text>
+      <path class="fio" d="M166 47 C195 47 195 86 218 90" marker-end="url(#a)"/>
+      <path class="fio" d="M166 137 C195 137 195 100 218 98" marker-end="url(#a)"/>
+      <path class="fio" d="M340 94 H390" marker-end="url(#a)"/>
+      <path class="fio" d="M522 94 H564" marker-end="url(#a)"/>
+      <path class="fio" d="M686 94 H722" marker-end="url(#a)"/>
+      <text class="td" x="16" y="195">BM25 vence em nomes/siglas exatos</text>
+      <text class="td" x="470" y="195">vetor vence quando a pergunta usa outras palavras</text>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">1ª etapa: lexical <em>e</em> vetorial fundidos por RRF (o default seguro). Depois pool largo → dedup → reranker → poucos itens para o contexto. "Buscar largo, reordenar estreito."</p>
+  </div>
+  <p>Dois pontos que nos interessam direto: <strong>BM25 ainda vence</strong> em identificadores e termos exatos (nomes, siglas), e adicionar um item só atualiza o índice invertido — <strong>sem GPU, sem re-embeddar</strong>. O ganho do vetorial aparece quando a pergunta usa <strong>palavras diferentes</strong> do que foi salvo ("situação" vs "mensalidade").</p>
+
+  <h2><span class="k">como fazemos</span>Lexical agora, e a <code>recall</code> que pergunta</h2>
+  <p>A recuperação é <strong>lexical</strong>: FTS5 (BM25, sem acento) sobre as observações, mais busca parcial por nome de entidade e por área. <strong>Sem embeddings</strong> — escolha consciente de começar pelo que não precisa de GPU e só depois somar o semântico (Etapa final do plano).</p>
+  <p>O que entra no contexto a cada turno (o <code>render_compact</code>, a nossa <em>working memory</em>): <strong>Agora</strong> + <strong>sessão em andamento</strong> (recalculados pelo relógio), o <strong>Núcleo</strong> (observações sobre o dono, ~400 tokens) e <strong>6 relevantes</strong> puxadas pela fala atual (BM25 + recência).</p>
+
+  <div class="dia" role="img" aria-label="recall única: busca por assunto retorna N assuntos agrupados; 1 age, 2 ou mais pergunta">
+    <svg viewBox="0 0 820 200">
+      <rect class="ba" x="16" y="20" width="200" height="40" rx="9"/>
+      <text class="t" x="30" y="38">recall("supino")</text><text class="tm" x="30" y="53">assunto, não nome exato</text>
+      <rect class="b" x="300" y="12" width="300" height="56" rx="9"/>
+      <text class="tc" x="316" y="34">"supino" → 2 assunto(s):</text>
+      <text class="td" x="316" y="52">[peito] Supino reto · [peito] Supino inclinado</text>
+      <path class="fio" d="M216 40 H298" marker-end="url(#a)"/>
+      <!-- bifurcação -->
+      <rect class="bc" x="140" y="120" width="250" height="56" rx="9"/>
+      <text class="ts" x="156" y="142">1 assunto → o agente age</text><text class="td" x="156" y="160">responde direto com o que achou</text>
+      <rect class="bw" x="430" y="120" width="250" height="56" rx="9"/>
+      <text class="ts" x="446" y="142">2+ assuntos → o agente pergunta</text><text class="td" x="446" y="160">"qual deles? reto ou inclinado?"</text>
+      <path class="fio" d="M420 68 C360 90 320 100 290 118" marker-end="url(#a)"/>
+      <path class="fio" d="M470 68 C510 90 540 100 560 118" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">A <code>recall</code> é uma <strong>busca única</strong>: devolve tudo sobre um assunto agrupado, com "N assunto(s)" na 1ª linha. A regra que medimos: <strong>1 assunto → o agente age; 2 ou mais → pergunta</strong>, mostrando as opções. A maioria dos sistemas apenas chuta.</p>
+  </div>
+
+  <h2><span class="k">lado a lado</span>Recuperação</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Capacidade</th><th>Referências</th><th>Nós hoje</th></tr></thead>
+    <tbody>
+      <tr><td>Lexical (BM25) para termos exatos</td><td>sim</td><td><span class="pill sim">sim</span> FTS5 sem acento</td></tr>
+      <tr><td>Busca parcial / sem nome exato</td><td>sim</td><td><span class="pill sim">sim</span> por nome + área</td></tr>
+      <tr><td>Semântica (embeddings)</td><td>sim (padrão)</td><td><span class="pill nao">não</span> — passo 2, na CPU</td></tr>
+      <tr><td>Híbrido + reranking (RRF, cross-encoder)</td><td>sim</td><td><span class="pill nao">não</span> só BM25 + parcial</td></tr>
+      <tr><td>Perguntar quando há ambiguidade</td><td><span class="pill meio">raro</span> (quase todos chutam)</td><td><span class="pill sim">sim</span> "N assuntos" → agir/perguntar</td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="vd meio">
+    <span class="et">certo começar lexical</span>
+    <p>BM25 sem GPU é o ponto de partida correto, e já estamos <strong>à frente</strong> no comportamento de perguntar na dúvida. A lacuna é clara e planejada: <strong>embeddings como passo 2</strong>, rodando na CPU (a GPU é do LLM), fundidos com o BM25 que já temos — só se a medição mostrar que o lexical + área não bastam. Híbrido + reranker completo vem depois disso, se valer o custo.</p>
+  </div>
+
+  <div class="prox">
+    <a class="n" href="etapa2-salvar.html"><div class="rot">← Anterior</div><div class="tit">2 · Salvar</div></a>
+    <a class="n" href="etapa4-atualizar.html"><div class="rot">Próxima →</div><div class="tit">4 · Atualizar</div></a>
+  </div>
+
+  <footer>Memória do Dono · etapa 3/5 · nov 2026 · <a href="index.html">voltar ao índice</a></footer>
+
+</div>
+</body>
+</html>

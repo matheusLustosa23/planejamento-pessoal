@@ -1,0 +1,135 @@
+/* Memória do Dono — sistema visual compartilhado das etapas.
+   Tratamento de referência técnica, sóbrio. Tokens de cor com dois temas. */
+:root{
+  --bg:#f6f4ef; --surf:#fffdf9; --surf2:#efece4; --ink:#1c1b18; --ink2:#55514a; --line:#ddd8cd;
+  --accent:#9a5b2e; --accent2:#2f6b5e; --warn:#8a5a12; --warn-bg:#f6ecd6; --ok:#2f6b5e;
+  --ref:#3a5a8c; --cta:#9a5b2e;
+  --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad;
+  --ref:#8ab0e8; --cta:#d9955e; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad;
+  --ref:#8ab0e8; --cta:#d9955e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);margin:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:860px;margin:0 auto;padding-block:22px 72px}
+
+/* topo: trilha de etapas + tema */
+.barra{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font:600 .72rem var(--mono);
+  letter-spacing:.04em;color:var(--ink2);padding-block:8px 14px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.barra .home{color:var(--accent);text-decoration:none}
+.barra .home:hover{text-decoration:underline}
+.trilha{display:flex;gap:4px;flex-wrap:wrap;margin-left:auto}
+.trilha a,.trilha span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;
+  text-decoration:none;border:1px solid var(--line);color:var(--ink2);font-size:.74rem}
+.trilha a:hover{border-color:var(--accent);color:var(--accent)}
+.trilha .at{background:var(--accent);border-color:var(--accent);color:#fff}
+.trilha .fim{width:auto;border:0;padding:0 2px}
+
+/* cabeçalho da etapa */
+.etapa-tag{font:600 .72rem var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,5.5vw,2.8rem);line-height:1.07;
+  letter-spacing:-.02em;margin:6px 0 10px;text-wrap:balance}
+.lede{font-size:1.1rem;color:var(--ink2);max-width:66ch;margin:0 0 6px}
+.marca{font-family:var(--serif);font-weight:600;color:var(--accent)}
+h2{font-family:var(--serif);font-weight:600;font-size:1.42rem;letter-spacing:-.01em;margin:44px 0 4px;
+  scroll-margin-top:20px;padding-top:16px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{display:block;font:600 .7rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.05rem;margin:22px 0 6px}
+p{margin:10px 0;max-width:74ch}
+a{color:var(--accent)}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.86em;background:var(--surf2);padding:.08em .35em;border-radius:4px;overflow-wrap:anywhere}
+ul,ol.lst{max-width:74ch;padding-left:1.2em;margin:10px 0}
+li{margin:5px 0}
+
+.cartao{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin:14px 0}
+.nota{border-left:3px solid var(--warn);background:var(--warn-bg);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:.95rem;max-width:74ch}
+.nota b{color:var(--warn)}
+.tagref{display:inline-block;font:600 .64rem var(--mono);letter-spacing:.05em;color:var(--ref);border:1px solid var(--ref);border-radius:5px;padding:1px 5px;vertical-align:middle}
+
+/* ilustração */
+.dia{overflow-x:auto;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:16px;margin:16px 0}
+.dia svg{display:block;width:100%;height:auto}
+.dia .cap{font-size:.82rem;color:var(--ink2);margin:10px 2px 0;max-width:none}
+svg .b{fill:var(--surf2);stroke:var(--line);stroke-width:1.5}
+svg .ba{fill:color-mix(in srgb,var(--accent) 14%,var(--surf));stroke:var(--accent);stroke-width:1.5}
+svg .bc{fill:color-mix(in srgb,var(--accent2) 14%,var(--surf));stroke:var(--accent2);stroke-width:1.5}
+svg .bw{fill:var(--warn-bg);stroke:var(--warn);stroke-width:1.5}
+svg .t{fill:var(--ink);font:600 13px var(--sans)}
+svg .ts{fill:var(--ink);font:600 11.5px var(--sans)}
+svg .tm{fill:var(--ink2);font:11px var(--mono)}
+svg .td{fill:var(--ink2);font:11.5px var(--sans)}
+svg .tc{fill:var(--accent);font:600 11px var(--mono)}
+svg .fio{stroke:var(--ink2);stroke-width:1.4;fill:none}
+svg .fioa{stroke:var(--accent);stroke-width:1.6;fill:none}
+svg .pt{fill:var(--ink2)}
+svg .pta{fill:var(--accent)}
+
+/* versus: como fazem × como fazemos */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0}
+@media (max-width:640px){.vs{grid-template-columns:1fr}}
+.vs .lado{border:1px solid var(--line);border-radius:14px;padding:16px 18px;background:var(--surf)}
+.vs .lado.eles{border-top:3px solid var(--ref)}
+.vs .lado.nos{border-top:3px solid var(--accent);background:color-mix(in srgb,var(--accent) 5%,var(--surf))}
+.vs h4{margin:0 0 4px;font:600 .72rem var(--mono);letter-spacing:.1em;text-transform:uppercase}
+.vs .eles h4{color:var(--ref)}
+.vs .nos h4{color:var(--accent)}
+.vs .sub{font-size:.86rem;color:var(--ink2);margin:0 0 10px}
+.vs ul{margin:8px 0 0;padding-left:1.1em;max-width:none}
+.vs li{font-size:.94rem;margin:7px 0}
+.vs li b{font-weight:600}
+
+/* tabela */
+.tomo{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:520px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .7rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);background:var(--surf2)}
+tr:last-child td{border-bottom:0}
+.pill{font:600 .72rem var(--mono);padding:1px 7px;border-radius:999px;white-space:nowrap}
+.sim{color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}
+.nao{color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.meio{color:var(--warn);background:var(--warn-bg)}
+
+/* veredito */
+.vd{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin:16px 0;background:var(--surf2)}
+.vd .et{font:600 .68rem var(--mono);letter-spacing:.08em;text-transform:uppercase;padding:3px 8px;border-radius:6px;white-space:nowrap;margin-top:1px}
+.vd.bom .et{color:#fff;background:var(--ok)}
+.vd.meio .et{color:var(--ink);background:var(--warn)}
+.vd.falta .et{color:#fff;background:var(--accent)}
+.vd p{margin:0;font-size:.95rem}
+
+/* navegação prev/next */
+.prox{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--line)}
+.prox a{display:block;border:1px solid var(--line);border-radius:12px;padding:12px 15px;text-decoration:none;background:var(--surf)}
+.prox a:hover{border-color:var(--accent)}
+.prox .rot{font:600 .66rem var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.prox .tit{color:var(--ink);font-weight:600;margin-top:2px}
+.prox .n{text-align:right}
+.prox .so1{grid-column:1 / -1}
+
+footer{margin-top:36px;color:var(--ink2);font-size:.82rem}
+
+/* index / hub */
+.hero{padding:10px 0 4px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:22px 0}
+.cards a{display:block;border:1px solid var(--line);border-radius:16px;padding:18px;text-decoration:none;
+  background:var(--surf);transition:border-color .15s}
+.cards a:hover{border-color:var(--accent)}
+.cards .num{font:600 .72rem var(--mono);color:var(--accent);letter-spacing:.1em}
+.cards .nome{font-family:var(--serif);font-weight:600;font-size:1.22rem;color:var(--ink);margin:4px 0 6px}
+.cards .desc{font-size:.9rem;color:var(--ink2)}
+.cards .mini{margin-top:12px}
+.cards .mini svg{width:100%;height:56px;display:block}
+.selo{display:inline-flex;gap:6px;flex-wrap:wrap;margin:8px 0 2px}
+.selo span{font:600 .68rem var(--mono);color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+.fontes{font-size:.82rem;color:var(--ink2)}
+.fontes a{color:var(--ref);word-break:break-word}
+.fontes li{margin:3px 0}

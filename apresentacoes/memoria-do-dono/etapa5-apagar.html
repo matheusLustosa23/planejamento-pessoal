@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>5 · Apagar — Memória do Dono</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="barra">
+    <a class="home" href="index.html">◆ Memória do Dono</a>
+    <span class="trilha">
+      <a href="index.html" title="Início">◆</a>
+      <a href="etapa1-estruturar.html">1</a>
+      <a href="etapa2-salvar.html">2</a>
+      <a href="etapa3-buscar.html">3</a>
+      <a href="etapa4-atualizar.html">4</a>
+      <span class="at">5</span>
+    </span>
+  </div>
+
+  <div class="etapa-tag">Etapa 5 de 5</div>
+  <h1>Apagar: esquecer e consolidar</h1>
+  <p class="lede">Uma memória que só cresce fica <strong>lenta e ruidosa</strong>. Esquecer de propósito — e resumir o miúdo em algo maior — é o que mantém a lembrança útil com o tempo. É a etapa mais negligenciada, e a nossa mais incipiente.</p>
+
+  <div class="dia" role="img" aria-label="Consolidação: muitas memórias viram um insight; poda do núcleo descarta o mais antigo">
+    <svg viewBox="0 0 820 200">
+      <!-- consolidação / reflexão -->
+      <text class="ts" x="20" y="24">Reflexão (consolidar)</text>
+      <rect class="b" x="20" y="36" width="150" height="12" rx="3"/>
+      <rect class="b" x="20" y="54" width="150" height="12" rx="3"/>
+      <rect class="b" x="20" y="72" width="150" height="12" rx="3"/>
+      <rect class="b" x="20" y="90" width="150" height="12" rx="3"/>
+      <path class="fioa" d="M178 70 H250" marker-end="url(#a)"/>
+      <rect class="ba" x="258" y="52" width="170" height="40" rx="8"/>
+      <text class="ts" x="272" y="70">insight de nível alto</text><text class="tm" x="272" y="86">"treina peito 2×/sem"</text>
+      <!-- poda / ttl -->
+      <text class="ts" x="500" y="24">Poda / expiração (TTL)</text>
+      <rect class="b" x="500" y="40" width="80" height="26" rx="6" opacity=".35"/><text class="tm" x="512" y="57" opacity=".5">antigo</text>
+      <rect class="b" x="500" y="74" width="80" height="26" rx="6" opacity=".6"/>
+      <rect class="ba" x="500" y="108" width="80" height="26" rx="6"/><text class="tm" x="512" y="125">recente</text>
+      <path class="fio" d="M588 53 H660" marker-end="url(#a)"/>
+      <text class="td" x="612" y="50">cai</text>
+      <text class="td" x="500" y="158">importância + recência decidem o que fica</text>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+    <p class="cap">Dois mecanismos: <strong>consolidar</strong> (resumir muitas memórias num insight) e <strong>podar</strong> (deixar expirar o que perdeu valor). Juntos, mantêm a memória enxuta sem perder o que importa.</p>
+  </div>
+
+  <h2><span class="k">como fazem</span>Importância, reflexão e sono</h2>
+  <ul>
+    <li><strong>Expiração (TTL)</strong> — a memória episódica combina com prazo de validade: eventos antigos decaem ou saem.</li>
+    <li><strong>Importância</strong> — <strong>Generative Agents</strong> <span class="tagref">arXiv 2304.03442</span>: além de relevância e recência, o LLM dá uma <strong>nota de 1 a 10</strong> para cada memória; o ranqueamento usa os três.</li>
+    <li><strong>Reflexão / consolidação</strong> — de tempos em tempos o agente <strong>resume memórias em insights</strong> de nível mais alto, que passam a ser recuperados no lugar de dezenas de linhas cruas.</li>
+    <li><strong>Sleep-time agent</strong> — <strong>Letta</strong>: um processo em segundo plano organiza e consolida a memória enquanto o agente está ocioso.</li>
+  </ul>
+
+  <div class="vs">
+    <div class="lado eles">
+      <h4>Como fazem</h4>
+      <p class="sub">esquecer é um recurso</p>
+      <ul>
+        <li><b>TTL:</b> episódica expira.</li>
+        <li><b>Importância 1–10:</b> o terceiro eixo do ranqueio.</li>
+        <li><b>Reflexão:</b> muitas linhas → um insight.</li>
+        <li><b>Sleep-time:</b> consolida em background.</li>
+      </ul>
+    </div>
+    <div class="lado nos">
+      <h4>Como fazemos</h4>
+      <p class="sub">incipiente, mas seguro</p>
+      <ul>
+        <li>Observação <b>nunca é apagada</b> (histórico preserva).</li>
+        <li>O <b>núcleo</b> tem poda: ~1600 chars, cai a mais antiga.</li>
+        <li>Ranqueio por <b>relevância + recência</b>, só.</li>
+        <li><b>Falta:</b> importância, reflexão/consolidação, TTL.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2><span class="k">lado a lado</span>Esquecer e consolidar</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Capacidade</th><th>Referências</th><th>Nós hoje</th></tr></thead>
+    <tbody>
+      <tr><td>Poda da working memory</td><td>sim</td><td><span class="pill sim">sim</span> núcleo ~400 tokens</td></tr>
+      <tr><td>Expiração (TTL) da episódica</td><td>sim</td><td><span class="pill nao">não</span></td></tr>
+      <tr><td>Importância (nota 1–10)</td><td>sim</td><td><span class="pill nao">não</span> só relevância + recência</td></tr>
+      <tr><td>Reflexão / consolidação</td><td>sim</td><td><span class="pill nao">não</span></td></tr>
+    </tbody>
+  </table></div>
+
+  <div class="vd falta">
+    <span class="et">lacuna — mas começo seguro</span>
+    <p>É a etapa onde mais falta: sem importância, sem reflexão e sem TTL, o ranqueio da Etapa 3 trabalha com menos sinais do que poderia. Por outro lado, "<strong>nunca apagar</strong>" + poda do núcleo é um começo <em>seguro</em> — não perdemos nada antes de termos consolidação boa. O próximo incremento natural: nota de importância no ranqueio e uma reflexão simples (resumir observações antigas de um mesmo assunto).</p>
+  </div>
+
+  <h2><span class="k">e como se mede isso?</span>Benchmarks — e por que o nosso ensaio vale</h2>
+  <p>Medir memória é traiçoeiro. <strong>LoCoMo</strong>, o mais reportado, está <strong>saturando</strong> (92–96% e números em disputa); <strong>LongMemEval</strong> é mais exigente; <strong>BEAM-1M/10M</strong> (2026) mostra que, em escala grande, os números caem muito — há muito teto. <span class="tagref">mem0.ai · openchamber.dev</span></p>
+  <div class="nota"><b>Por que isto valida o nosso método:</b> a crítica de 2026 mais relevante é que LoCoMo e LongMemEval são "só pergunta e resposta" — mas num assistente o que importa é a <strong>ação</strong> (o fato foi salvo? o lembrete disparou?). A proposta é medir o <strong>estado final do mundo</strong>. O nosso "ensaio" (repetir falas reais, conferir no banco o que foi salvo, desfazer) é <em>exatamente</em> essa avaliação agêntica por estado final — não medimos a resposta bonita, medimos se a memória ficou certa. Números de fornecedor a gente ignora.</div>
+
+  <h2><span class="k">fechando o ciclo</span>Onde estamos</h2>
+  <p>Juntando as cinco etapas: a <strong>estrutura</strong> está boa e até à frente em dois pontos (perguntar na ambiguidade, determinismo em data/conta). As lacunas são as previstas e concentradas no fim do ciclo — <strong>semântica (embeddings + dedup), consolidação (importância/reflexão) e separação de camadas</strong> — e nenhuma exige reescrever o cérebro, só evoluí-lo. Este mapa existe para embasar esse plano.</p>
+
+  <div class="prox">
+    <a class="n" href="etapa4-atualizar.html"><div class="rot">← Anterior</div><div class="tit">4 · Atualizar</div></a>
+    <a class="n" href="index.html"><div class="rot">Voltar ao →</div><div class="tit">Índice · as 5 etapas</div></a>
+  </div>
+
+  <footer>Memória do Dono · etapa 5/5 · nov 2026 · <a href="index.html">voltar ao índice</a></footer>
+
+</div>
+</body>
+</html>

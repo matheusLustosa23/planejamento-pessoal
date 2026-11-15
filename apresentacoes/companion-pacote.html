@@ -1,0 +1,392 @@
+<title>Pacote do companion</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: uma coluna de leitura (≈68ch) com diagramas e blocos de terminal que podem ir mais largo; trilho lateral
+   de "passos" só onde a ordem é real (montagem, instalação, atualização). */
+:root {
+  --bg: #f4f6f3; --panel: #ffffff; --ink: #18211d; --muted: #5a6862; --line: #d6ddd8;
+  --accent: #0d7a68; --accent-soft: #d9efe9; --amber: #a8620a; --amber-soft: #f6e7cf;
+  --term-bg: #13201b; --term-ink: #d9efe6; --term-dim: #7fa396; --term-hi: #f3b860;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1412; --panel: #151d1a; --ink: #e2ebe6; --muted: #92a39b; --line: #2a3832;
+  --accent: #4fd0b4; --accent-soft: #163a32; --amber: #f0b04a; --amber-soft: #3a2c14;
+  --term-bg: #0a100e; --term-ink: #d9efe6; --term-dim: #6f9284; --term-hi: #f3b860; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1412; --panel: #151d1a; --ink: #e2ebe6; --muted: #92a39b; --line: #2a3832;
+  --accent: #4fd0b4; --accent-soft: #163a32; --amber: #f0b04a; --amber-soft: #3a2c14;
+  --term-bg: #0a100e; --term-ink: #d9efe6; --term-dim: #6f9284; --term-hi: #f3b860; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.62 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 980px; margin: 0 auto; padding-block: 40px 80px; display: grid; gap: 56px; }
+.prosa { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.12; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.3rem); font-weight: 800; letter-spacing: -0.02em; }
+h2 { font-size: clamp(1.45rem, 3vw, 1.95rem); font-weight: 800; letter-spacing: -0.01em; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+section { display: grid; gap: 16px; }
+.rotulo { font: 600 .74rem/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.sub { color: var(--muted); font-size: 1.08rem; max-width: 62ch; }
+code { font-family: var(--mono); font-size: .9em; background: var(--accent-soft); padding: .08em .35em; border-radius: 4px; overflow-wrap: anywhere; }
+a { color: var(--accent); }
+strong { font-weight: 600; }
+
+/* topo: os dois números que justificam a fase */
+.topo { display: grid; gap: 22px; }
+.comparacao { display: flex; flex-wrap: wrap; gap: 28px; align-items: end; padding-top: 8px; }
+.medida { display: grid; gap: 2px; }
+.medida b { font: 800 clamp(2rem, 6vw, 3.1rem)/1 var(--display); font-variant-numeric: tabular-nums; }
+.medida span { color: var(--muted); font-size: .92rem; }
+.medida.antes b { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 3px; }
+.medida.depois b { color: var(--accent); }
+.seta { font: 600 1.6rem var(--mono); color: var(--muted); padding-bottom: 14px; }
+
+/* terminal */
+.term { background: var(--term-bg); color: var(--term-ink); font: .86rem/1.6 var(--mono); border-radius: 10px;
+  padding: 14px 16px; overflow-x: auto; white-space: pre; min-width: 0; }
+.term .c { color: var(--term-dim); }
+.term .h { color: var(--term-hi); }
+.term .p { color: var(--term-dim); user-select: none; }
+
+/* diagramas */
+.diagrama { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+.diagrama svg { display: block; min-width: 640px; width: 100%; height: auto; }
+svg .caixa { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; }
+svg .caixa-a { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+svg .caixa-b { fill: var(--amber-soft); stroke: var(--amber); stroke-width: 1.5; }
+svg .t { fill: var(--ink); font: 600 13px var(--body); }
+svg .tm { fill: var(--ink); font: 12px var(--mono); }
+svg .td { fill: var(--muted); font: 12px var(--body); }
+svg .fio { stroke: var(--muted); stroke-width: 1.6; fill: none; }
+svg .fio-a { stroke: var(--accent); stroke-width: 2; fill: none; }
+svg .ponta { fill: var(--muted); }
+svg .ponta-a { fill: var(--accent); }
+
+/* passos com ordem real */
+.passos { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: p; }
+.passos li { counter-increment: p; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 14px; position: relative; padding-bottom: 22px; }
+.passos li::before { content: counter(p); grid-row: 1 / span 2; width: 32px; height: 32px; border-radius: 50%;
+  display: grid; place-items: center; font: 600 .9rem var(--mono); background: var(--accent-soft); color: var(--accent); border: 1.5px solid var(--accent); }
+.passos li:not(:last-child)::after { content: ""; position: absolute; left: 15px; top: 34px; bottom: 2px; width: 2px; background: var(--line); }
+.passos h3 { padding-top: 5px; }
+.passos .corpo { display: grid; gap: 8px; min-width: 0; color: var(--ink); }
+.passos .corpo p { color: var(--muted); }
+
+/* tabelas */
+.tabela { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 600 .74rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+tr:last-child td { border-bottom: 0; }
+td code { white-space: nowrap; }
+
+/* aviso */
+.nota { border-left: 3px solid var(--amber); background: var(--amber-soft); padding: 12px 16px; border-radius: 0 10px 10px 0; color: var(--ink); max-width: 72ch; }
+
+/* laboratório base64 */
+.lab { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 14px; }
+.lab-grade { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 720px) { .lab-grade { grid-template-columns: minmax(0, 1fr); } }
+.lab label { font: 600 .74rem var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 6px; }
+.lab textarea { width: 100%; min-height: 150px; resize: vertical; font: .85rem/1.55 var(--mono); color: var(--ink); background: var(--bg);
+  border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.lab textarea:focus, .lab button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.saida { font: .82rem/1.55 var(--mono); background: var(--term-bg); color: var(--term-ink); border-radius: 8px; padding: 10px; min-height: 150px;
+  overflow-wrap: anywhere; white-space: pre-wrap; }
+.lab .linha-cmd { font: .82rem/1.55 var(--mono); background: var(--term-bg); color: var(--term-ink); border-radius: 8px; padding: 10px 12px;
+  overflow-wrap: anywhere; }
+.lab .linha-cmd b { color: var(--term-hi); font-weight: 400; }
+.lab-acoes { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.lab button { font: 600 .88rem var(--body); color: var(--accent); background: transparent; border: 1.5px solid var(--accent); border-radius: 8px; padding: 7px 14px; cursor: pointer; }
+.lab button:hover { background: var(--accent-soft); }
+.lab .info { color: var(--muted); font-size: .88rem; }
+.sinal-ok { color: var(--accent); font-weight: 600; }
+
+.duas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+@media (max-width: 760px) { .duas { grid-template-columns: minmax(0, 1fr); } }
+.cartao { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; display: grid; gap: 8px; align-content: start; }
+.cartao p { color: var(--muted); }
+footer { color: var(--muted); font-size: .88rem; border-top: 1px solid var(--line); padding-top: 18px; }
+@media (prefers-reduced-motion: no-preference) { .lab .saida { transition: background-color .2s; } }
+</style>
+
+<main>
+  <header class="topo">
+    <span class="rotulo">brazaia · fase companion leve · 04–05/11/2026</span>
+    <h1>Como o companion virou um pacote</h1>
+    <p class="sub">O servidor monta um arquivo com o código do companion, os devices baixam pela tailnet e instalam com o pip, e uma linha colada no Termux leva um celular do zero até conectado. Esta página mostra cada peça na ordem em que ela acontece.</p>
+    <div class="comparacao" aria-label="Tamanho antes e depois">
+      <div class="medida antes"><b>5,8 GB</b><span>antes: o repositório inteiro clonado em cada device</span></div>
+      <div class="seta" aria-hidden="true">→</div>
+      <div class="medida depois"><b>≈ 590 KB</b><span>agora: só o pacote do companion (48 arquivos)</span></div>
+    </div>
+  </header>
+
+  <!-- 1 -->
+  <section>
+    <span class="rotulo">1 · o formato</span>
+    <h2>Um pacote Python é um zip com um nome combinado</h2>
+    <div class="prosa"><p>O <code>pip</code> instala arquivos <code>.whl</code> (<em>wheel</em>). Por dentro, um wheel é um <strong>zip comum</strong>: o código, mais uma pasta <code>…dist-info</code> que diz ao pip o nome, a versão, as dependências e o hash de cada arquivo. Como o formato é simples, o servidor monta esse zip direto em Python, sem ferramenta de build. É o arquivo <code>infrastructure/companion_pacote.py</code>.</p></div>
+    <div class="diagrama" role="img" aria-label="Estrutura do arquivo brazaia_companion.whl">
+      <svg viewBox="0 0 900 330">
+        <rect class="caixa-a" x="20" y="16" width="860" height="300" rx="12"/>
+        <text class="t" x="40" y="44">brazaia_companion-1.0.0+h7967c20566-py3-none-any.whl</text>
+        <text class="td" x="40" y="64">nome = pacote · versão · funciona em qualquer Python 3 · qualquer sistema</text>
+
+        <rect class="caixa" x="40" y="84" width="390" height="214" rx="10"/>
+        <text class="t" x="58" y="110">companion/   (o código)</text>
+        <text class="tm" x="58" y="136">__init__.py      caminho(), DADOS</text>
+        <text class="tm" x="58" y="158">connect.py       conexão + atualização</text>
+        <text class="tm" x="58" y="180">localizacao.py   rastreador</text>
+        <text class="tm" x="58" y="202">setup.py         instala boot/jobs</text>
+        <text class="tm" x="58" y="224">boot/*.sh        supervisor, boot…</text>
+        <text class="tm" x="58" y="246">models/braza.onnx  (wake word)</text>
+        <rect class="caixa-b" x="54" y="258" width="362" height="30" rx="6"/>
+        <text class="tm" x="66" y="278">_versao.py   VERSAO = "1.0.0+h7967c20566"</text>
+
+        <rect class="caixa" x="460" y="84" width="400" height="214" rx="10"/>
+        <text class="t" x="478" y="110">brazaia_companion-…dist-info/</text>
+        <text class="tm" x="478" y="140">METADATA</text>
+        <text class="td" x="580" y="140">nome, versão, dependências, extra [cli]</text>
+        <text class="tm" x="478" y="172">WHEEL</text>
+        <text class="td" x="580" y="172">"py3-none-any": Python puro</text>
+        <text class="tm" x="478" y="204">entry_points</text>
+        <text class="td" x="580" y="204">cria o comando brazaia-companion</text>
+        <text class="tm" x="478" y="236">RECORD</text>
+        <text class="td" x="580" y="236">sha256 + tamanho de cada arquivo</text>
+        <text class="td" x="478" y="270">o pip confere o RECORD: arquivo corrompido = recusa</text>
+      </svg>
+    </div>
+    <div class="nota">O <code>_versao.py</code> não existe no repositório. Ele é escrito <strong>só dentro do pacote</strong>, na hora de montar. Por isso o companion rodando do repo responde <code>__version__ = "dev"</code>, e o instalado responde a versão de verdade.</div>
+  </section>
+
+  <!-- 2 -->
+  <section>
+    <span class="rotulo">2 · a montagem no servidor</span>
+    <h2>Da pasta <code>companion/</code> ao arquivo, em cinco passos</h2>
+    <ol class="passos">
+      <li><h3>Listar os arquivos</h3><div class="corpo"><p>Percorre a pasta <code>companion/</code> do Windows e deixa de fora o que o device não usa: <code>__pycache__</code>, as 78 saudações gravadas em <code>.wav</code> (8,7 MB, só o modo de voz do desktop usa) e o logo grande (2,5 MB). O código já trata a falta deles: sem saudação, não toca; sem logo grande, usa o pequeno.</p></div></li>
+      <li><h3>Normalizar o texto</h3><div class="corpo"><p>O Git do Windows grava os arquivos com final de linha <code>CRLF</code>. Um <code>.sh</code> com <code>\r</code> quebra o bash do celular (<code>$'\r': command not found</code>). Todo <code>.py/.sh/.txt/.md</code> entra no pacote com <code>LF</code>. O <code>.gitattributes</code> novo também força <code>LF</code> nos <code>.sh</code> do repositório.</p></div></li>
+      <li><h3>Ordenar pelo caminho em texto</h3><div class="corpo"><p>O Windows ordena nomes sem diferenciar maiúsculas, e o <code>README.md</code> mudava de lugar. Com a ordem diferente, o hash saía diferente para o mesmo conteúdo. Agora a ordem é pelo texto do caminho, igual em qualquer sistema.</p></div></li>
+      <li><h3>Calcular a versão</h3><div class="corpo"><p>Versão = <code>1.0.0</code> + os 10 primeiros caracteres do <strong>sha256 de todo o conteúdo</strong>. Mudou um byte do companion, muda a versão; o mesmo conteúdo dá a mesma versão no note e no Windows (conferido: <code>h7967c20566</code> nos dois).</p></div></li>
+      <li><h3>Escrever o zip</h3><div class="corpo"><p>Grava o código, o <code>_versao.py</code> e os metadados em <code>data/companion_dist/</code>. Se já existe um arquivo dessa versão, reaproveita; ao gerar um novo, apaga o antigo. Fica sempre uma versão só.</p></div></li>
+    </ol>
+  </section>
+
+  <!-- 3 -->
+  <section>
+    <span class="rotulo">3 · o download</span>
+    <h2>O servidor só é alcançável pela tailnet</h2>
+    <div class="prosa"><p>O agente escuta no IP do Tailscale (<code>100.79.27.100:8080</code>). O Termux não cria uma VPN no Android: o <code>tailscaled</code> roda em modo <em>userspace</em> e oferece um <strong>proxy SOCKS5 em <code>localhost:1055</code></strong>. Tudo que precisa falar com o servidor passa por esse proxy: o <code>curl</code> da instalação (<code>--socks5-hostname</code>), o <code>connect</code> e o download da atualização (<code>SOCKS_PROXY</code> no <code>~/.brazaia.env</code>).</p></div>
+    <div class="diagrama" role="img" aria-label="Caminho do download do celular até o servidor">
+      <svg viewBox="0 0 900 200">
+        <defs>
+          <marker id="pa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ponta-a" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <rect class="caixa" x="20" y="40" width="200" height="110" rx="10"/>
+        <text class="t" x="38" y="68">Celular (Termux)</text>
+        <text class="tm" x="38" y="96">curl / connect</text>
+        <text class="td" x="38" y="120">pede via SOCKS</text>
+        <text class="td" x="38" y="138">localhost:1055</text>
+
+        <rect class="caixa-a" x="300" y="40" width="200" height="110" rx="10"/>
+        <text class="t" x="318" y="68">tailscaled</text>
+        <text class="td" x="318" y="96">userspace, no próprio</text>
+        <text class="td" x="318" y="114">Termux; cifra e manda</text>
+        <text class="td" x="318" y="132">pela tailnet (WireGuard)</text>
+
+        <rect class="caixa" x="580" y="40" width="300" height="110" rx="10"/>
+        <text class="t" x="598" y="68">Servidor 100.79.27.100:8080</text>
+        <text class="tm" x="598" y="96">GET /api/v1/companion/versao</text>
+        <text class="tm" x="598" y="118">GET /api/v1/companion/pacote/…whl</text>
+        <text class="td" x="598" y="138">versão antiga pedida → 404</text>
+
+        <path class="fio-a" d="M220 95 H296" marker-end="url(#pa)"/>
+        <path class="fio-a" d="M500 95 H576" marker-end="url(#pa)"/>
+        <text class="td" x="20" y="186">A chave do Tailscale vem antes de tudo: sem tailnet não há como baixar o pacote.</text>
+      </svg>
+    </div>
+    <div class="term"><span class="c"># /versao responde o que o device precisa saber</span>
+{"versao": "1.0.0+h7967c20566",
+ "arquivo": "brazaia_companion-1.0.0+h7967c20566-py3-none-any.whl",
+ "url": "/api/v1/companion/pacote/brazaia_companion-1.0.0+h7967c20566-py3-none-any.whl",
+ "bytes": 592988}</div>
+  </section>
+
+  <!-- 4 -->
+  <section>
+    <span class="rotulo">4 · a linha que vira arquivo</span>
+    <h2>Como o <code>echo</code> cria o <code>instalar.sh</code></h2>
+    <div class="prosa"><p>O <code>ops/companion_kit.py</code> lê o <code>instalar.sh</code> (≈ 2,7 KB, várias linhas), codifica em <strong>base64</strong> e imprime <strong>uma linha só</strong>:</p></div>
+    <div class="term"><span class="p">$ </span>echo <span class="h">IyEvZGF0YS9kYXRhL2NvbS50ZXJtdXgv…</span> | base64 -d &gt; ~/instalar.sh &amp;&amp; bash ~/instalar.sh <span class="h">eyJzZXJ2aWRvciI6…</span></div>
+    <div class="duas">
+      <div class="cartao"><h3><code>echo &lt;texto&gt;</code></h3><p>Escreve o texto base64 na saída. Base64 representa qualquer conteúdo usando só letras, números, <code>+</code>, <code>/</code> e <code>=</code>: sem quebra de linha, sem acento e sem aspas que o terminal possa interpretar.</p></div>
+      <div class="cartao"><h3><code>| base64 -d</code></h3><p>O <code>|</code> (pipe) passa essa saída para o <code>base64 -d</code>, que <strong>decodifica</strong> de volta para os bytes originais: o script inteiro, com cada quebra de linha no lugar.</p></div>
+      <div class="cartao"><h3><code>&gt; ~/instalar.sh</code></h3><p>Redireciona o resultado para um arquivo. É aqui que o texto "vira arquivo": os bytes decodificados são gravados em <code>~/instalar.sh</code>, idênticos ao original.</p></div>
+      <div class="cartao"><h3><code>&amp;&amp; bash ~/instalar.sh &lt;KIT&gt;</code></h3><p>Se o arquivo foi gravado sem erro (<code>&amp;&amp;</code>), executa o script e passa o <strong>kit</strong> como argumento. O kit também é base64: um JSON com o servidor, o nome do device e a chave do Tailscale.</p></div>
+    </div>
+    <div class="nota"><strong>Por que não colar o script direto?</strong> A primeira versão colava várias linhas. Copiado do terminal do Windows, o texto pode levar <code>CRLF</code>, e o bash do Termux nem reconhece o fim do bloco. Em base64, a linha é igual em qualquer lugar: Windows, WhatsApp ou e-mail.</div>
+
+    <div class="lab" aria-labelledby="lab-titulo">
+      <h3 id="lab-titulo">Experimente: escreva um script e veja a linha que o kit geraria</h3>
+      <div class="lab-grade">
+        <div><label for="lab-script">Script (o que vai virar arquivo)</label>
+          <textarea id="lab-script" spellcheck="false">#!/bin/bash
+echo "1/6 pacotes do Termux…"
+echo "olá do celular novo"</textarea></div>
+        <div><label for="lab-b64">Base64 (o que viaja na linha)</label><div class="saida" id="lab-b64" aria-live="polite"></div></div>
+      </div>
+      <div><label for="lab-linha">A linha para colar no Termux</label><div class="linha-cmd" id="lab-linha"></div></div>
+      <div class="lab-acoes">
+        <button type="button" id="lab-decodificar">Decodificar de volta</button>
+        <button type="button" id="lab-copiar">Copiar a linha</button>
+        <span class="info" id="lab-info">Edite o script; a linha se atualiza sozinha.</span>
+      </div>
+    </div>
+
+    <div class="term"><span class="c"># o KIT decodificado (exemplo; a chave real nunca aparece aqui)</span>
+{"servidor": "100.79.27.100:8080", "device_id": "celular2",
+ "device_name": "Celular 2", "ts_authkey": "tskey-auth-…"}</div>
+  </section>
+
+  <!-- 5 -->
+  <section>
+    <span class="rotulo">5 · a instalação</span>
+    <h2>O que o <code>instalar.sh</code> faz, de 1/6 a 6/6</h2>
+    <div class="prosa"><p>A ordem não é arbitrária: o servidor só é alcançável pela tailnet, então o Tailscale precisa subir antes do download do pacote.</p></div>
+    <ol class="passos">
+      <li><h3>Pacotes do Termux</h3><div class="corpo"><p>Instala <code>python</code>, <code>termux-api</code> e <code>curl</code>, à vista e sem perguntas (<code>dpkg confdef/confold</code>). Na primeira versão, uma pergunta escondida do <code>dpkg</code> travava este passo.</p></div></li>
+      <li><h3>Baixar o Tailscale</h3><div class="corpo"><p>Lê o índice oficial (<code>pkgs.tailscale.com/stable/?mode=json</code>), pega o arquivo da arquitetura do celular (<code>arm64</code>) e coloca <code>tailscale</code> e <code>tailscaled</code> em <code>~/ts/bin</code>. Se já existem, pula.</p></div></li>
+      <li><h3>Entrar na tailnet</h3><div class="corpo"><p>Sobe o <code>tailscaled</code> em modo userspace com o SOCKS em <code>:1055</code> e roda <code>tailscale up --auth-key</code> com a chave do kit. Os dois rodam com <code>PATH=/system/bin</code>: com o PATH do Termux, o Tailscale acha o <code>termux-clipboard-set</code> e faz uma chamada que alguns Androids bloqueiam (<code>SIGSYS</code>, medido no celular novo com Android 15).</p></div></li>
+      <li><h3>Baixar o companion</h3><div class="corpo"><p>Pelo SOCKS: pergunta a versão em <code>/versao</code> e baixa o <code>.whl</code> para <code>~/.brazaia/pacote/</code>.</p></div></li>
+      <li><h3>Instalar</h3><div class="corpo"><p><code>pip install "…whl[cli]"</code>. O pip lê o <code>METADATA</code>, baixa as dependências do PyPI pela internet normal, confere o <code>RECORD</code> e copia o código para <code>site-packages/companion</code>.</p></div></li>
+      <li><h3>Configurar e subir</h3><div class="corpo"><p><code>python -m companion.setup --kit</code>: grava o <code>~/.brazaia.env</code> (com permissão 600, porque tem a chave), copia os scripts de dentro do pacote para <code>~/.brazaia/</code>, instala o boot e os jobs (watchdog e localização) e pede as permissões. No fim, o supervisor sobe o <code>connect</code> e o rastreador.</p></div></li>
+    </ol>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Onde</th><th>O quê</th><th>Quem coloca</th></tr></thead>
+        <tbody>
+          <tr><td><code>site-packages/companion/</code></td><td>o código instalado</td><td>pip (passo 5) e cada atualização</td></tr>
+          <tr><td><code>~/.brazaia.env</code></td><td>servidor, nome, proxy, chave do Tailscale</td><td>setup <code>--kit</code></td></tr>
+          <tr><td><code>~/.brazaia/</code></td><td>supervisor, healthcheck, localização, áudio, pacotes baixados</td><td>setup</td></tr>
+          <tr><td><code>~/.termux/boot/00-brazaia.sh</code></td><td>sobe o supervisor quando o celular liga</td><td>setup (precisa do Termux:Boot)</td></tr>
+          <tr><td><code>~/ts/</code></td><td>binários e estado do Tailscale, logs</td><td>instalar.sh / supervisor</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6 -->
+  <section>
+    <span class="rotulo">6 · a atualização</span>
+    <h2>O device se atualiza quando conecta</h2>
+    <div class="prosa"><p>No handshake, o "welcome" do servidor traz a versão atual do pacote. O <code>connect</code> compara com a sua e decide:</p></div>
+    <div class="diagrama" role="img" aria-label="Decisão de atualização no connect">
+      <svg viewBox="0 0 900 250">
+        <defs><marker id="pb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ponta" d="M0 0L10 5L0 10z"/></marker>
+              <marker id="pc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ponta-a" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="caixa" x="20" y="90" width="190" height="70" rx="10"/>
+        <text class="t" x="36" y="118">welcome traz</text>
+        <text class="tm" x="36" y="140">versao = X</text>
+
+        <rect class="caixa" x="290" y="14" width="270" height="56" rx="10"/>
+        <text class="t" x="306" y="38">minha versão é X</text>
+        <text class="td" x="306" y="58">segue normal</text>
+        <rect class="caixa" x="290" y="96" width="270" height="56" rx="10"/>
+        <text class="t" x="306" y="120">sou "dev" ou rodo no CLI</text>
+        <text class="td" x="306" y="140">nunca atualiza (note, Windows)</text>
+        <rect class="caixa-a" x="290" y="178" width="270" height="56" rx="10"/>
+        <text class="t" x="306" y="202">instalado e supervisionado</text>
+        <text class="td" x="306" y="222">versão diferente → atualiza</text>
+
+        <rect class="caixa-a" x="630" y="160" width="250" height="88" rx="10"/>
+        <text class="td" x="646" y="184">baixa o .whl pelo SOCKS</text>
+        <text class="td" x="646" y="202">pip install --no-deps --force-reinstall</text>
+        <text class="td" x="646" y="220">mata o rastreador e sai</text>
+        <text class="td" x="646" y="238">o supervisor sobe a versão nova (≤ 30 s)</text>
+
+        <path class="fio" d="M210 115 C250 115 250 42 286 42" marker-end="url(#pb)"/>
+        <path class="fio" d="M210 125 H286" marker-end="url(#pb)"/>
+        <path class="fio-a" d="M210 135 C250 135 250 206 286 206" marker-end="url(#pc)"/>
+        <path class="fio-a" d="M560 206 H626" marker-end="url(#pc)"/>
+      </svg>
+    </div>
+    <div class="prosa"><p>Se o download ou o pip falhar, o <code>connect</code> registra no log e <strong>continua na versão atual</strong>. O device nunca fica sem companion por causa de uma atualização.</p></div>
+  </section>
+
+  <!-- 7 -->
+  <section>
+    <span class="rotulo">7 · o que ainda falta</span>
+    <h2>Limites conhecidos</h2>
+    <div class="tabela">
+      <table>
+        <thead><tr><th>Limite</th><th>Efeito</th><th>Plano</th></tr></thead>
+        <tbody>
+          <tr><td>A atualização troca o Python, não os scripts de <code>~/.brazaia</code></td><td>uma correção no <code>supervisor.sh</code> (como o PATH limpo do Tailscale) só chega rodando o <code>setup</code> de novo</td><td>recopiar os scripts depois de atualizar</td></tr>
+          <tr><td><code>--no-deps</code> na atualização</td><td>dependência nova não é instalada sozinha</td><td>hoje não há nenhuma; tratar quando aparecer</td></tr>
+          <tr><td>Rotas do pacote sem login</td><td>qualquer um na tailnet baixa o código (sem segredo dentro)</td><td>fase de identidade e permissões</td></tr>
+          <tr><td>Chave do Tailscale criada à mão</td><td>único passo de configuração manual</td><td>painel gera pela API, com escopo mínimo e tag</td></tr>
+          <tr><td>S24 ainda roda do clone antigo</td><td>não recebe atualização automática</td><td>migração com os comandos da conversa</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>Arquivos: <code>infrastructure/companion_pacote.py</code> · <code>api/v1/routers/companion_router.py</code> · <code>application/services/device_handshake.py</code> · <code>companion/connect.py</code> · <code>companion/setup.py</code> · <code>companion/boot/instalar.sh</code> · <code>ops/companion_kit.py</code> · <code>.gitattributes</code></footer>
+</main>
+
+<script>
+(() => {
+  const ent = document.getElementById("lab-script");
+  const b64 = document.getElementById("lab-b64");
+  const linha = document.getElementById("lab-linha");
+  const info = document.getElementById("lab-info");
+  const paraB64 = (txt) => {
+    const bytes = new TextEncoder().encode(txt.replace(/\r\n/g, "\n"));
+    let bin = ""; bytes.forEach((b) => { bin += String.fromCharCode(b); });
+    return btoa(bin);
+  };
+  const deB64 = (s) => new TextDecoder().decode(Uint8Array.from(atob(s), (c) => c.charCodeAt(0)));
+  const kit = paraB64(JSON.stringify({ servidor: "100.79.27.100:8080", device_id: "celular2", device_name: "Celular 2", ts_authkey: "tskey-auth-…" })).replace(/=+$/, "");
+  let atual = "";
+  const atualizar = () => {
+    atual = paraB64(ent.value);
+    b64.textContent = atual;
+    linha.innerHTML = "";
+    const pre = document.createTextNode("echo ");
+    const a = document.createElement("b"); a.textContent = atual;
+    const meio = document.createTextNode(" | base64 -d > ~/instalar.sh && bash ~/instalar.sh ");
+    const k = document.createElement("b"); k.textContent = kit;
+    linha.append(pre, a, meio, k);
+    info.textContent = `${new TextEncoder().encode(ent.value).length} bytes de script viram ${atual.length} caracteres de base64 (cerca de 4 para cada 3).`;
+  };
+  ent.addEventListener("input", atualizar);
+  document.getElementById("lab-decodificar").addEventListener("click", () => {
+    try {
+      const volta = deB64(atual);
+      b64.textContent = volta;
+      info.innerHTML = volta === ent.value.replace(/\r\n/g, "\n")
+        ? '<span class="sinal-ok">Decodificado: idêntico ao script, byte a byte.</span> Edite de novo para ver o base64.'
+        : "Decodificado (diferença só no final de linha).";
+    } catch { info.textContent = "Não foi possível decodificar este texto."; }
+  });
+  document.getElementById("lab-copiar").addEventListener("click", async () => {
+    const txt = linha.textContent;
+    try { await navigator.clipboard.writeText(txt); info.textContent = "Linha copiada."; }
+    catch {
+      const r = document.createRange(); r.selectNodeContents(linha);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      info.textContent = "Selecionei a linha: use Ctrl+C para copiar.";
+    }
+  });
+  atualizar();
+})();
+</script>

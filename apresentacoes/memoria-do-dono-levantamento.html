@@ -1,0 +1,323 @@
+<title>Memória do Dono — Levantamento</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: coluna de leitura (~74ch) + nav lateral fixa (vira topo no celular); tratamento de referência técnica,
+   sóbrio. Tokens de cor com dois temas. */
+:root{
+  --bg:#f6f4ef; --surf:#fffdf9; --surf2:#efece4; --ink:#1c1b18; --ink2:#55514a; --line:#ddd8cd;
+  --accent:#9a5b2e; --accent2:#2f6b5e; --warn:#8a5a12; --warn-bg:#f6ecd6; --ok:#2f6b5e;
+  --ref:#3a5a8c; --cta:#9a5b2e;
+  --serif:"Fraunces",Georgia,serif; --sans:"Inter",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad;
+  --ref:#8ab0e8; --cta:#d9955e; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#141310; --surf:#1c1b17; --surf2:#232119; --ink:#ece7dd; --ink2:#a39d90; --line:#322f27;
+  --accent:#d9955e; --accent2:#6fc0ad; --warn:#e0b35a; --warn-bg:#2e2512; --ok:#6fc0ad;
+  --ref:#8ab0e8; --cta:#d9955e; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;padding-block:32px 72px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:40px}
+@media (max-width:900px){.wrap{grid-template-columns:1fr;gap:20px}}
+nav{position:sticky;top:max(12px,env(safe-area-inset-top,0px));align-self:start;font-size:.86rem;max-height:calc(100vh - 40px);overflow:auto}
+@media (max-width:900px){nav{position:static;max-height:none;background:var(--surf);border:1px solid var(--line);border-radius:12px;padding:12px 14px}}
+nav .marca{font-family:var(--serif);font-weight:600;font-size:1.05rem;color:var(--accent);margin-bottom:4px}
+nav .data{color:var(--ink2);font-size:.76rem;margin-bottom:14px}
+nav ol{list-style:none;margin:0;padding:0;counter-reset:n;display:grid;gap:2px}
+nav a{display:block;color:var(--ink2);text-decoration:none;padding:4px 8px;border-radius:7px;border-left:2px solid transparent}
+nav a:hover{color:var(--ink);background:var(--surf2)}
+nav li{counter-increment:n}
+nav a::before{content:counter(n) ". ";color:var(--accent);font-variant-numeric:tabular-nums}
+main{min-width:0}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2rem,5vw,2.9rem);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;text-wrap:balance}
+.lede{font-size:1.12rem;color:var(--ink2);max-width:66ch;margin:0 0 8px}
+h2{font-family:var(--serif);font-weight:600;font-size:1.5rem;letter-spacing:-.01em;margin:46px 0 4px;scroll-margin-top:20px;padding-top:18px;border-top:1px solid var(--line);text-wrap:balance}
+h2 .k{display:block;font:600 .72rem var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+h3{font-family:var(--sans);font-weight:600;font-size:1.08rem;margin:26px 0 6px}
+p{margin:10px 0;max-width:74ch}
+a{color:var(--accent)}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.86em;background:var(--surf2);padding:.08em .35em;border-radius:4px;overflow-wrap:anywhere}
+ul,ol.lst{max-width:74ch;padding-left:1.2em;margin:10px 0}
+li{margin:5px 0}
+.cartao{background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin:16px 0}
+.nota{border-left:3px solid var(--warn);background:var(--warn-bg);border-radius:0 10px 10px 0;padding:12px 16px;margin:16px 0;font-size:.95rem;max-width:74ch}
+.nota b{color:var(--warn)}
+.tagref{display:inline-block;font:600 .66rem var(--mono);letter-spacing:.05em;color:var(--ref);border:1px solid var(--ref);border-radius:5px;padding:1px 5px;vertical-align:middle}
+.tomo{overflow-x:auto;margin:16px 0;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:.9rem;min-width:620px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:600 .7rem var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);background:var(--surf2)}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+.pill{font:600 .72rem var(--mono);padding:1px 7px;border-radius:999px;white-space:nowrap}
+.sim{color:var(--ok);background:color-mix(in srgb,var(--ok) 15%,transparent)}
+.nao{color:var(--accent);background:color-mix(in srgb,var(--accent) 15%,transparent)}
+.meio{color:var(--warn);background:var(--warn-bg)}
+.dia{overflow-x:auto;background:var(--surf);border:1px solid var(--line);border-radius:14px;padding:18px;margin:18px 0}
+.dia svg{display:block;min-width:600px;width:100%;height:auto}
+svg .b{fill:var(--surf2);stroke:var(--line);stroke-width:1.5}
+svg .ba{fill:color-mix(in srgb,var(--accent) 14%,var(--surf));stroke:var(--accent);stroke-width:1.5}
+svg .bc{fill:color-mix(in srgb,var(--accent2) 14%,var(--surf));stroke:var(--accent2);stroke-width:1.5}
+svg .t{fill:var(--ink);font:600 13px var(--sans)}
+svg .tm{fill:var(--ink2);font:11px var(--mono)}
+svg .td{fill:var(--ink2);font:11.5px var(--sans)}
+svg .fio{stroke:var(--ink2);stroke-width:1.4;fill:none}
+svg .pt{fill:var(--ink2)}
+.fontes{font-size:.82rem;color:var(--ink2)}
+.fontes a{color:var(--ref);word-break:break-word}
+.fontes li{margin:3px 0}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);color:var(--ink2);font-size:.84rem}
+.selo{display:inline-flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+.selo span{font:600 .68rem var(--mono);color:var(--ink2);border:1px solid var(--line);border-radius:6px;padding:2px 7px}
+</style>
+
+<div class="wrap">
+<nav>
+  <div class="marca">Memória do Dono</div>
+  <div class="data">Levantamento · 10 nov 2026</div>
+  <ol>
+    <li><a href="#resumo">Como ler</a></li>
+    <li><a href="#fundamentos">Fundamentos</a></li>
+    <li><a href="#sistemas">Sistemas de referência</a></li>
+    <li><a href="#tecnicas">Técnicas e debates</a></li>
+    <li><a href="#retrieval">Recuperação</a></li>
+    <li><a href="#avaliacao">Como se avalia</a></li>
+    <li><a href="#nosso">Nosso cérebro hoje</a></li>
+    <li><a href="#improviso">O que improvisamos</a></li>
+    <li><a href="#lacunas">Nós × referências</a></li>
+    <li><a href="#fontes">Fontes</a></li>
+  </ol>
+</nav>
+
+<main>
+  <h1>Inteligência de memória do dono em agentes</h1>
+  <p class="lede">Levantamento do estado da arte (até nov/2026) e do nosso cérebro hoje — para embasar o plano de evolução. Não é o plano: é o mapa do terreno.</p>
+  <div class="selo"><span>pesquisa web · nov/2026</span><span>código do nosso cérebro</span><span>sem decisões fechadas</span></div>
+
+  <!-- 1 -->
+  <h2 id="resumo"><span class="k">1 · como ler</span>O que este documento é</h2>
+  <p>Três partes: <strong>(a)</strong> o que a área sabe hoje sobre memória de agente — taxonomias, sistemas de referência, técnicas e debates em aberto; <strong>(b)</strong> como o <strong>nosso cérebro</strong> funciona hoje, com o fluxo de entrada e saída e tudo que o serviço faz; <strong>(c)</strong> onde estamos <strong>improvisando</strong> e por quê, e as lacunas em relação às referências.</p>
+  <p>Uma ressalva que vale para tudo: muitos números de desempenho são <strong>auto-reportados por fornecedores</strong> e alguns benchmarks estão em disputa. Trato isso como indicativo, não como verdade, e sinalizo onde a evidência é fraca.</p>
+  <div class="nota"><b>Contexto nosso:</b> agente local, modelo <code>qwen35-27b</code> numa GPU só, cérebro em SQLite no servidor. Duas restrições moldam tudo: o modelo é <strong>fraco em data e conta</strong> (então empurramos isso para o código) e a GPU está <strong>ocupada com o LLM</strong> (então embeddings, se vierem, rodam na CPU).</p>
+
+  <!-- 2 -->
+  <h2 id="fundamentos"><span class="k">2 · fundamentos</span>Dois jeitos de classificar memória</h2>
+  <h3>A taxonomia clássica (cognitiva) — CoALA, 2023 <span class="tagref">arXiv 2309.02427</span></h3>
+  <p>A referência mais citada separa a memória do agente em quatro tipos, emprestados da ciência cognitiva. É o vocabulário que quase todo sistema usa:</p>
+  <ul>
+    <li><strong>Working (trabalho):</strong> o que está na janela de contexto agora. É o único que o modelo "vê"; os outros existem para alimentá-lo.</li>
+    <li><strong>Episódica:</strong> experiências e eventos ("fiz supino 4×6 com 18 kg em 07/09"). Guarda o que <em>aconteceu</em>.</li>
+    <li><strong>Semântica:</strong> fatos sobre o mundo e sobre o dono ("trabalha na Disbral", "prefere resposta direta"). Guarda o que <em>é verdade</em>.</li>
+    <li><strong>Procedural:</strong> como agir — parte implícita nos pesos do modelo, parte explícita no código e nas regras de prompt.</li>
+  </ul>
+  <p>Boa prática apontada repetidamente: <strong>manter os tipos separados</strong>, porque cada um tem ciclo de vida próprio. Misturá-los é o erro de design mais comum. Working precisa de poda agressiva; episódica combina com expiração (TTL); semântica precisa de controle de obsolescência; procedural deve ser <em>versionada e descontinuada</em>, não apagada — e escrever nela é mais arriscado que nos outros.</p>
+
+  <h3>A taxonomia nova (2025–26) — "Memory in the Age of AI Agents" <span class="tagref">arXiv 2512.13564</span></h3>
+  <p>Um survey recente argumenta que o corte "curto × longo prazo" <strong>deixou de ser útil</strong> e propõe três eixos:</p>
+  <ul>
+    <li><strong>Formas:</strong> em token (texto no contexto), paramétrica (nos pesos), latente (vetores/estados).</li>
+    <li><strong>Funções:</strong> factual, experiencial, de trabalho.</li>
+    <li><strong>Dinâmicas:</strong> <em>formação</em> → <em>evolução</em> → <em>recuperação</em> (o ciclo de vida).</li>
+  </ul>
+  <p>Duas viradas que esse survey e outros de 2026 marcam: a passagem de <strong>pipelines feitos à mão para gestão de memória aprendida por RL</strong>, e de <strong>recuperação estática para "síntese generativa"</strong> (o sistema decide <em>quando</em> buscar e <em>o que</em> procurar, e às vezes <em>gera</em> a memória relevante em vez de só buscar). O mesmo survey separa memória de agente de "RAG": memória é um <strong>estado cognitivo persistente e auto-evolutivo</strong>, não só recuperação de documentos.</p>
+
+  <h3>O ciclo de vida (o que importa na prática)</h3>
+  <p>Juntando as fontes, toda memória madura passa por cinco momentos, e cada um é uma decisão de projeto:</p>
+  <ol class="lst">
+    <li><strong>Extrair</strong> o fato da conversa (quem faz: o LLM ou o código?).</li>
+    <li><strong>Armazenar</strong> estruturado (texto? triplas? registros tipados?).</li>
+    <li><strong>Recuperar</strong> o relevante (lexical? vetorial? híbrido?).</li>
+    <li><strong>Atualizar / resolver conflito</strong> quando um fato muda (na escrita ou na leitura?).</li>
+    <li><strong>Esquecer / consolidar</strong> (TTL, importância, reflexão).</li>
+  </ol>
+
+  <!-- 3 -->
+  <h2 id="sistemas"><span class="k">3 · sistemas de referência</span>Como os melhores fazem</h2>
+  <p>Os cinco mais citados, e em uma linha o que cada um ensina. Depois, a tabela comparativa.</p>
+  <ul>
+    <li><strong>Generative Agents</strong> (Stanford, 2023) <span class="tagref">arXiv 2304.03442</span> — o "memory stream": toda experiência vira uma linha em linguagem natural; a recuperação pontua cada memória por <strong>relevância (embedding) + recência (decaimento) + importância (nota 1–10 dada pelo LLM)</strong>. Introduziu a <strong>reflexão</strong>: periodicamente o agente sintetiza memórias em insights de nível mais alto. É o desenho-pai copiado por quase todos.</li>
+    <li><strong>MemGPT / Letta</strong> — trata o contexto como "RAM" e dá ao agente <strong>ferramentas para gerir a própria memória</strong> em três camadas: <em>core</em> (sempre no contexto, editável pelo agente), <em>recall</em> (histórico buscável) e <em>archival</em> (longo prazo, semântico). A versão nova tem um "sleep-time agent" que organiza a memória em segundo plano e uma ferramenta <em>recall</em> unificada. Ponto importante: depende de um modelo capaz para se auto-editar bem.</li>
+    <li><strong>mem0</strong> — pipeline de <strong>extração + consolidação</strong>: um LLM tira os fatos de cada par de mensagens e, comparando com os mais parecidos, decide <code>ADD / UPDATE / DELETE / NONE</code>. Loja dupla: vetor para busca semântica + grafo opcional para relações. Dedup por hash exato do texto (V3). Licença aberta (Apache 2.0).</li>
+    <li><strong>Zep / Graphiti</strong> — <strong>grafo de conhecimento temporal</strong>: cada fato tem período de validade; contradição vira "sucessão de fatos" (o antigo fica com data de fim, não é apagado). Fluxo duplo: ingestão rápida de arestas temporais + consolidação assíncrona de entidades/causas por LLM. Tende a vencer em resolução de conflito, ao custo de escrita mais lenta.</li>
+    <li><strong>CoALA</strong> (2023) <span class="tagref">arXiv 2309.02427</span> — não é um produto, é o <strong>framework conceitual</strong> que deu o vocabulário working/episódica/semântica/procedural e a ideia de working memory como o hub que liga tudo.</li>
+  </ul>
+  <p>Mais recentes (2026), na fronteira: <strong>A-Mem</strong> (notas agênticas que se interligam), <strong>MIRIX</strong> (seis componentes de memória), memória <strong>provenance-aware</strong> (de onde veio cada fato) e <strong>schema-constrained generation</strong> (a escrita é forçada a um esquema). São sinais de para onde o campo vai, não necessariamente o que adotar.</p>
+
+  <div class="tomo"><table>
+    <thead><tr><th>Sistema</th><th>Armazenamento</th><th>Recuperação</th><th>Conflito / update</th><th>Extração</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Generative Agents</strong></td><td>texto livre (stream)</td><td>relevância + recência + importância</td><td>reflexão periódica</td><td>LLM</td></tr>
+      <tr><td><strong>MemGPT / Letta</strong></td><td>blocos (core) + arquivo</td><td>semântica (archival) + core sempre no contexto</td><td>o agente edita a própria memória</td><td>o agente (tool calls)</td></tr>
+      <tr><td><strong>mem0</strong></td><td>vetor + grafo opcional</td><td>semântica (top-K)</td><td>ADD/UPDATE/DELETE na escrita</td><td>LLM (2 chamadas)</td></tr>
+      <tr><td><strong>Zep / Graphiti</strong></td><td>grafo temporal (validade)</td><td>grafo + semântica</td><td>sucessão de fatos com validade</td><td>LLM assíncrono</td></tr>
+      <tr><td><strong>Nosso cérebro</strong></td><td>SQLite estruturado (entidades + observações + registros + relações)</td><td>lexical (BM25 + parcial + área)</td><td>observação nunca apaga; <code>substitui</code> encadeia; registro corrige por <code>invalido_em</code></td><td>o modelo (tools) + parse de data/número no código</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- 4 -->
+  <h2 id="tecnicas"><span class="k">4 · técnicas e debates</span>As decisões que ainda dividem</h2>
+  <h3>Quem extrai o fato: o LLM ou o código?</h3>
+  <p>O padrão dominante é o <strong>LLM extrair</strong> campos estruturados na escrita. Mas uma linha de trabalho usa <strong>código determinístico + o LLM só para a pergunta de contradição</strong>. É exatamente a nossa escolha para data/número: o modelo é ruim nisso (vimos ele errar o dia da semana), então o <code>quando_de</code> no código resolve a data e o modelo não precisa calcular. É defensável e alinhado com "matemática vai para o código".</p>
+
+  <h3>Resolver conflito na escrita ou na leitura? (o grande debate)</h3>
+  <p>Dois campos:</p>
+  <ul>
+    <li><strong>Na escrita</strong> (mem0, Zep): a cada fato novo, compara com os parecidos e decide ADD/UPDATE/DELETE. Vantagem: uma loja sempre limpa. Custo: escrita mais lenta e com perda.</li>
+    <li><strong>Na leitura</strong>: anexa tudo e investe na recuperação. Uma visão crítica argumenta que pedir ao LLM uma loja livre de conflito a cada escrita é "mais difícil, mais lento e de pior qualidade" que guardar tudo e buscar bem.</li>
+  </ul>
+  <p>O nosso modelo hoje é mais perto do "na leitura" com um toque de escrita: a observação <strong>nunca é apagada</strong> (histórico preservado), e corrigir cria uma nova com <code>substitui</code> apontando para a antiga — parecido com a "sucessão de fatos" do Zep, só que sem o grafo temporal completo.</p>
+
+  <h3>Registros tipados + validade + cardinalidade</h3>
+  <p>Consenso crescente: guardar <strong>campos explícitos</strong> (entidade, atributo, valor, data) em vez de pedaços de texto é o que faz um update ser um update de verdade. E distinguir <strong>cardinalidade</strong>: "cidade atual" é <em>um</em> valor por vez (muda → o antigo fecha); "comidas que gosta" podem coexistir. O <strong>REAL</strong> <span class="tagref">arXiv 2606.10694</span> trata isso para não apagar fatos paralelos válidos nem perder mudanças reais. Nós já guardamos números estruturados (<code>{series,reps,carga_kg}</code>), mas <strong>não</strong> modelamos cardinalidade.</p>
+
+  <h3>Deduplicação</h3>
+  <p>Do mais simples ao mais robusto: hash exato do texto (mem0 V3) → similaridade com limiar (ex.: 0,92; verdicts "duplicado / contradiz / refina / sem conflito"). É o que falta a nós: hoje "Supino reto" vira uma entidade nova se não bate exatamente com "Supino máquina reto".</p>
+
+  <h3>Importância e reflexão</h3>
+  <p>Dos Generative Agents: além de relevância e recência, pontuar <strong>importância</strong> (o LLM nota de 1 a 10) e, de tempos em tempos, <strong>refletir</strong> (resumir memórias em insights). Nós temos relevância + recência no ranqueamento, mas <strong>não</strong> temos importância nem reflexão/consolidação.</p>
+
+  <!-- 5 -->
+  <h2 id="retrieval"><span class="k">5 · recuperação</span>O estado da arte em achar o que importa</h2>
+  <p>O padrão de 2025–26 para recuperar é claro e estável: <strong>híbrido, depois reranking</strong>.</p>
+  <ol class="lst">
+    <li><strong>Busca híbrida</strong> na 1ª etapa: lexical (BM25) <em>e</em> vetorial (embeddings), fundidas por <strong>RRF</strong> (Reciprocal Rank Fusion) — o default seguro, que não precisa de dados rotulados.</li>
+    <li><strong>Pool largo</strong> (top-100) → de-duplicação (MMR) → <strong>reranker</strong> cross-encoder → top-5/10 para o contexto. "Buscar largo, reordenar estreito."</li>
+  </ol>
+  <p>Dois pontos que nos interessam diretamente:</p>
+  <ul>
+    <li><strong>BM25 ainda vence</strong> em identificadores e termos exatos (nomes, siglas, "PicPay"), e adicionar um item só atualiza o índice invertido — <strong>sem GPU, sem re-embeddar</strong>. É por isso que a nossa base lexical faz sentido como ponto de partida.</li>
+    <li>O ganho do vetorial aparece quando a pergunta usa <strong>palavras diferentes</strong> do que foi salvo ("situação" vs "mensalidade"). Daí o plano de embeddings como <em>passo 2</em>, na CPU, fundido com o BM25 que já temos.</li>
+  </ul>
+
+  <!-- 6 -->
+  <h2 id="avaliacao"><span class="k">6 · como se avalia</span>Benchmarks (e por que desconfiar deles)</h2>
+  <ul>
+    <li><strong>LoCoMo</strong> — o mais reportado, e já <strong>saturando</strong>; números na faixa de 92–96% são comuns e vários estão em disputa (até os donos dos sistemas discordam das contas uns dos outros).</li>
+    <li><strong>LongMemEval</strong> — mais exigente; o grafo temporal do Zep costuma liderar aqui.</li>
+    <li><strong>BEAM-1M / 10M</strong> (2026) — escalas muito maiores; os números caem bastante (ex.: ~64% em 1M, ~49% em 10M reportados), mostrando que há muito teto.</li>
+    <li><strong>Benchmarks agênticos</strong> (2026) — a crítica mais relevante para nós: LoCoMo e LongMemEval são "só pergunta e resposta"; o que importa num assistente é a <strong>ação</strong> (o fato foi salvo? o lembrete disparou?). Propõem medir o <strong>estado final do mundo</strong>, não a resposta.</li>
+  </ul>
+  <div class="nota"><b>Por que isto valida o nosso método:</b> o nosso "ensaio" (repetir falas reais, conferir no banco o que foi salvo, desfazer) é exatamente a avaliação <em>agêntica por estado final</em> que a literatura de 2026 defende — não medimos a resposta bonita, medimos se a memória ficou certa. Vendor numbers a gente ignora.</p>
+
+  <!-- 7 -->
+  <h2 id="nosso"><span class="k">7 · nosso cérebro hoje</span>Como funciona, in e out</h2>
+  <p>Tudo vive em <code>data/cerebro.db</code> (SQLite). O esquema é <strong>estruturado</strong> (não texto solto), e isso é a nossa maior força — alinha com a direção "registros tipados".</p>
+
+  <div class="dia" role="img" aria-label="Esquema do cérebro: tipos, entidades, observações, relações, registros, lembretes">
+    <svg viewBox="0 0 860 300">
+      <rect class="b" x="16" y="120" width="150" height="56" rx="9"/>
+      <text class="t" x="30" y="143">tipos</text><text class="tm" x="30" y="162">nome · área</text>
+      <rect class="ba" x="210" y="118" width="170" height="62" rx="9"/>
+      <text class="t" x="226" y="141">entidades</text><text class="tm" x="226" y="160">nome · tipo</text><text class="td" x="226" y="174">"Você", "Supino reto"</text>
+      <rect class="bc" x="430" y="16" width="200" height="74" rx="9"/>
+      <text class="t" x="446" y="39">observações</text><text class="td" x="446" y="57">fatos (semântica)</text><text class="tm" x="446" y="76">substitui · invalido_em</text>
+      <rect class="bc" x="430" y="208" width="200" height="74" rx="9"/>
+      <text class="t" x="446" y="231">registros</text><text class="td" x="446" y="249">eventos (episódica)</text><text class="tm" x="446" y="268">dados JSON · sessão</text>
+      <rect class="b" x="676" y="16" width="168" height="74" rx="9"/>
+      <text class="t" x="692" y="39">obs_fts</text><text class="td" x="692" y="57">índice de busca</text><text class="tm" x="692" y="76">FTS5 · sem acento</text>
+      <rect class="b" x="676" y="118" width="168" height="62" rx="9"/>
+      <text class="t" x="692" y="141">relações</text><text class="td" x="692" y="160">entidade → entidade</text>
+      <rect class="b" x="676" y="208" width="168" height="74" rx="9"/>
+      <text class="t" x="692" y="231">lembretes</text><text class="td" x="692" y="249">avisam no futuro</text><text class="tm" x="692" y="268">próximo · recorrência</text>
+      <path class="fio" d="M166 148 H206" marker-end="url(#a)"/>
+      <path class="fio" d="M380 140 C408 140 408 60 428 56" marker-end="url(#a)"/>
+      <path class="fio" d="M380 158 C408 158 408 240 428 244" marker-end="url(#a)"/>
+      <path class="fio" d="M630 53 H672" marker-end="url(#a)"/>
+      <path class="fio" d="M380 150 C520 150 540 148 672 148" marker-end="url(#a)"/>
+      <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="pt" d="M0 0L10 5L0 10z"/></marker></defs>
+    </svg>
+  </div>
+  <p>Mapeando à taxonomia clássica: <strong>observações = semântica</strong> (o que o dono é/sabe), <strong>registros = episódica</strong> (o que fez, com data e números), <strong>o bloco injetado no contexto = working</strong>, e as <strong>regras de prompt + o código = procedural</strong>. Temos os quatro tipos — estruturalmente parecidos com Letta/CoALA.</p>
+
+  <h3>Entrada (IN): o que entra no contexto a cada turno</h3>
+  <p>O método <code>render_compact</code> monta o bloco <code>MEMÓRIA</code> que vai em <strong>todo</strong> turno (é a nossa "working memory"):</p>
+  <ul>
+    <li><strong>Agora</strong> + <strong>sessão em andamento</strong> (se há um treino aberto) — recalculados pelo relógio, fora do cache.</li>
+    <li><strong>Núcleo:</strong> as observações sobre "Você" (o dono), limitado a ~1600 chars (~400 tokens); estourou, cai a mais antiga.</li>
+    <li><strong>Relevantes:</strong> 6 observações puxadas pela <em>fala atual</em> (ranqueadas por BM25 + recência).</li>
+  </ul>
+
+  <h3>Saída (OUT): as ferramentas que o modelo chama</h3>
+  <div class="tomo"><table>
+    <thead><tr><th>Ferramenta</th><th>Faz</th><th>Escreve / lê</th></tr></thead>
+    <tbody>
+      <tr><td><code>remember</code></td><td>grava um fato sobre o dono</td><td>observação (com <code>substitui</code> para corrigir)</td></tr>
+      <tr><td><code>log</code></td><td>registra o que ele fez (treino, série, estudo)</td><td>registro (sessão abrir/fechar; <code>igual_ultima</code>, <code>cada_lado</code>)</td></tr>
+      <tr><td><code>recall</code> <span class="pill sim">novo</span></td><td>a busca única: tudo sobre um assunto, agrupado, com "N assuntos" na 1ª linha</td><td>lê observações + registros (parcial + área)</td></tr>
+      <tr><td><code>remind</code></td><td>lembrete que avisa no futuro</td><td>lembrete (agendador no servidor)</td></tr>
+    </tbody>
+  </table></div>
+  <p>A <strong>recuperação</strong> é lexical: FTS5 (BM25, sem acento) sobre as observações, mais a busca parcial por nome de entidade e por área que acabamos de medir. <strong>Sem embeddings</strong> — é a escolha consciente de começar pelo lexical (que não precisa de GPU) e só depois somar o semântico.</p>
+
+  <h3>A superfície do serviço</h3>
+  <p>O <code>cerebro_service.py</code> (~580 linhas) concentra <strong>quatro responsabilidades</strong>: parse de linguagem (datas), regra de negócio (salvar/consultar/sessão), ranqueamento (relevância+recência) e <strong>formatação de texto para leitura</strong>. É funcional, mas é um "God service" — e é daí que vem a crítica da próxima seção.</p>
+
+  <!-- 8 -->
+  <h2 id="improviso"><span class="k">8 · o que improvisamos</span>A dívida, com honestidade</h2>
+  <p>O que fazemos por escolha defensável, e o que é dívida acumulada:</p>
+  <div class="tomo"><table>
+    <thead><tr><th>Ponto</th><th>Situação</th><th>Veredito</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Parse de data/número no código</strong> (<code>quando_de</code>, <code>desde_de</code>)</td><td>regex converte "ontem 18:40" → timestamp, em vez de confiar no modelo</td><td><span class="pill sim">defensável</span> o modelo erra data; é o mesmo princípio de "conta vai pro código"</td></tr>
+      <tr><td><strong>Armazenamento estruturado</strong></td><td>treino salvo como <code>{series,reps,carga_kg}</code>, não como frase</td><td><span class="pill sim">certo</span> alinha com "registros tipados"; não normalizamos o formato de gravação</td></tr>
+      <tr><td><strong>Formatação de leitura no serviço</strong> (<code>fmt_dados</code>, <code>_reg_linha</code>, <code>_linha</code>)</td><td>o serviço monta a string "4 séries de 6…" que o modelo e o painel leem</td><td><span class="pill meio">cheiro</span> apresentação é camada de view; devia ser um render separado</td></tr>
+      <tr><td><strong><code>_AREA_TIPO</code> duplicado</strong></td><td>cópia em código das áreas que já existem na tabela <code>tipos</code></td><td><span class="pill nao">dívida (minha)</span> fere fonte única da verdade; deve ler do store</td></tr>
+      <tr><td><strong>Busca lexical em código</strong> (<code>termos</code>, <code>_STOP</code>)</td><td>tira stopwords, acha termos que valem busca</td><td><span class="pill meio">ok por ora</span> é justamente o que o embedding substituiria no passo 2</td></tr>
+      <tr><td><strong>Serviço faz tudo</strong></td><td>parse + negócio + ranqueio + formatação num arquivo</td><td><span class="pill meio">estrutural</span> God service; separar em camadas quando estabilizar</td></tr>
+      <tr><td><strong>Sem dedup semântico</strong></td><td>"Supino reto" ≠ "Supino máquina reto" → cria entidade nova</td><td><span class="pill nao">lacuna</span> todos os maduros resolvem isso por similaridade</td></tr>
+      <tr><td><strong>Sem importância / reflexão</strong></td><td>ranqueio por relevância + recência, só</td><td><span class="pill meio">lacuna</span> Generative Agents têm os três + reflexão</td></tr>
+    </tbody>
+  </table></div>
+
+  <!-- 9 -->
+  <h2 id="lacunas"><span class="k">9 · nós × referências</span>Onde estamos, onde falta</h2>
+  <div class="tomo"><table>
+    <thead><tr><th>Capacidade</th><th>Referências</th><th>Nós hoje</th></tr></thead>
+    <tbody>
+      <tr><td>Armazenamento estruturado / tipado</td><td>sim (registros, triplas, grafo)</td><td><span class="pill sim">sim</span> entidades + observações + registros</td></tr>
+      <tr><td>Working memory sempre no contexto</td><td>sim (core blocks, stream)</td><td><span class="pill sim">sim</span> núcleo + relevantes</td></tr>
+      <tr><td>Episódica × semântica separadas</td><td>sim</td><td><span class="pill sim">sim</span> registros × observações</td></tr>
+      <tr><td>Correção com histórico / validade</td><td>sim (sucessão, bi-temporal)</td><td><span class="pill sim">parcial</span> <code>substitui</code>/<code>invalido_em</code>, sem grafo temporal</td></tr>
+      <tr><td>Busca parcial / sem nome exato</td><td>sim</td><td><span class="pill sim">sim</span> (acabamos de medir)</td></tr>
+      <tr><td>"Pergunta quando há ambiguidade"</td><td>raro (a maioria chuta)</td><td><span class="pill sim">sim</span> "N assuntos" → agir/perguntar</td></tr>
+      <tr><td>Recuperação semântica (embeddings)</td><td>sim (padrão)</td><td><span class="pill nao">não</span> só lexical — passo 2</td></tr>
+      <tr><td>Híbrido + reranking</td><td>sim</td><td><span class="pill nao">não</span> só BM25+parcial</td></tr>
+      <tr><td>Dedup semântico / cardinalidade</td><td>sim</td><td><span class="pill nao">não</span></td></tr>
+      <tr><td>Importância + reflexão/consolidação</td><td>sim</td><td><span class="pill nao">não</span></td></tr>
+      <tr><td>Camada de apresentação separada</td><td>sim</td><td><span class="pill nao">não</span> (no serviço)</td></tr>
+      <tr><td>Determinismo em data/conta</td><td>raro (quase todos confiam no LLM)</td><td><span class="pill sim">sim</span> — nossa vantagem, dado o modelo fraco</td></tr>
+    </tbody>
+  </table></div>
+  <p>Leitura geral: a <strong>estrutura</strong> está boa e até à frente em dois pontos (perguntar na ambiguidade; determinismo). As lacunas são as previstas — <strong>semântica (embeddings + dedup), consolidação (importância/reflexão) e separação de camadas</strong> — e nenhuma exige reescrever o cérebro, só evoluí-lo.</p>
+
+  <!-- 10 -->
+  <h2 id="fontes"><span class="k">10 · fontes</span>Referências consultadas</h2>
+  <p class="fontes">Pesquisa web em 10/11/2026. Números de desempenho são, em geral, auto-reportados e alguns disputados — tratados como indicativos.</p>
+  <ul class="fontes">
+    <li>Memory in the Age of AI Agents: A Survey (taxonomia Formas/Funções/Dinâmicas) — <a href="https://arxiv.org/pdf/2512.13564">arXiv 2512.13564</a></li>
+    <li>CoALA — Cognitive Architectures for Language Agents (working/episódica/semântica/procedural) — <a href="https://arxiv.org/pdf/2309.02427">arXiv 2309.02427</a></li>
+    <li>Generative Agents (memory stream, relevância+recência+importância, reflexão) — <a href="https://arxiv.org/pdf/2304.03442v2">arXiv 2304.03442</a></li>
+    <li>Letta / MemGPT — docs oficiais (core/recall/archival, sleep-time) — <a href="https://docs.letta.com/guides/agents/architectures/memgpt">docs.letta.com</a></li>
+    <li>mem0 vs Zep (arquitetura, grafo temporal, dedup) — <a href="https://vectorize.io/articles/mem0-vs-zep">vectorize.io</a> · <a href="https://atlan.com/know/best-ai-agent-memory-frameworks-2026/">atlan.com</a></li>
+    <li>REAL — grafo com cardinalidade / validade — <a href="https://arxiv.org/pdf/2606.10694">arXiv 2606.10694</a></li>
+    <li>Context-aware extraction, conflito write-time × read-time — <a href="https://arxiv.org/pdf/2604.19771">arXiv 2604.19771</a> · <a href="https://www.memoryplugin.com/wiki/updates-and-conflicts.html">The Field Guide to AI Memory</a></li>
+    <li>Busca híbrida + reranking (BM25 + vetor + RRF) — <a href="https://denser.ai/blog/hybrid-search-for-rag/">denser.ai</a> · <a href="https://tianpan.co/blog/2026-04-12-hybrid-search-production-bm25-dense-embeddings">tianpan.co</a></li>
+    <li>Estado de 2026 / benchmarks (LoCoMo saturando, BEAM, agentic) — <a href="https://mem0.ai/blog/ai-memory-benchmarks-in-2026">mem0.ai</a> · <a href="https://arxiv.org/pdf/2609.05441">arXiv 2609.05441 (cost-aware)</a> · <a href="https://openchamber.dev/blog/agent-memory-research/">openchamber.dev</a></li>
+    <li>Memória pessoal / local-first (perfil + sessão, local) — <a href="https://arxiv.org/pdf/2607.18975">arXiv 2607.18975</a></li>
+    <li>Coletânea de técnicas (notebooks) — <a href="https://github.com/NirDiamant/Agent_Memory_Techniques">NirDiamant/Agent_Memory_Techniques</a></li>
+  </ul>
+
+  <footer>
+    Levantamento para embasar o plano de evolução da memória do dono · nosso agente (<code>feat/devices</code>) · 10 nov 2026.
+    Próximo passo é seu: com este mapa, elaborar o plano. As decisões já tomadas (recall única, lexical+área primeiro, perguntar na ambiguidade, embeddings adiados) estão medidas e no código.
+  </footer>
+</main>
+</div>
