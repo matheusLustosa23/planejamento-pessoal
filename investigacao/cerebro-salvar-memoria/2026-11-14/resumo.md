@@ -47,22 +47,52 @@ Antes de escolher a ESTRUTURA do novo cérebro, entender **como o agente transfo
 
 ---
 
-## 4. EM CURSO — bateria com thinking LIGADO
+## 4. RESULTADO — thinking LIGADO (decisivo)
 
-**Hipótese:** com `think=True` o modelo raciocina "o dono contou um fato → preciso chamar salvar" antes de responder, e o `narrou` despenca. **Custo:** tokens/latência por turno.
+**Hipótese confirmada:** com `think=True` o modelo raciocina "o dono contou um fato → preciso chamar salvar" antes de responder, e os gargalos estruturais somem. Script: `observar_agente_think.py` (cópia do v3, só `think=False→True`, saída em `agente_think.json/.md`).
 
-- Script: `observar_agente_think.py` (cópia do v3, só `think=False→True`, saída em `agente_think.json/.md`).
-- Sinal cedo (caso ambíguo supino, 3 reps): `perguntou · perguntou · salvou` — já pergunta mais que o v3.
-- Resultado fechado (108 turnos) entra aqui quando terminar: **think-off (v3) × think-on** lado a lado em `salvou/perguntou/narrou/erro` + custo.
+### Agregado (108 turnos cada)
+| classe | off (v3) | on |
+|---|--:|--:|
+| **salvou** | 48 | **95** |
+| perguntou | 17 | 10 |
+| **narrou** (disse "anotei" e não chamou) | 25 | **2** |
+| narrou_pergunta | 6 | 1 |
+| **erro** (arg truncado) | 12 | **0** |
 
-### Nota de infra (consertado hoje)
+- **AGIU (salvou+perguntou): 60% → 97%** · **NÃO CHAMOU: 29% → 3%**.
+- O **"promete e não chama"** (narrou) despencou de **29% → 3%** — o problema estrutural que resistia ao prompt.
+- O **erro de truncamento** sumiu (12→0): raciocinando antes, escreve o arg curto/completo em vez de estourar `max_tok`.
+- O **`perguntou` caiu no total mas MELHOROU de qualidade**: sumiram as perguntas erradas nos casos claros; as certas (ambíguo) aumentaram.
+
+### Por caso (destaques)
+| caso | esperado | off | on |
+|---|---|---|---|
+| supino 4x10x50 | perguntar | narrou=4 (0 pergunta útil) ❌ | **perguntou=4** ✅ |
+| mercado 50 | perguntar | perguntou=5 ✅ | perguntou=5 ✅ |
+| trabalho | salvar | salvou=3 perguntou=2 (erra) | **salvou=6** ✅ |
+| banco de dados | salvar | **erro=6** ❌ | **salvou=6** ✅ |
+| reunião | salvar | erro/narrou, 0 salvou ❌ | **salvou=6** ✅ |
+| sono | salvar | narrou/erro, 1 salvou ❌ | **salvou=6** ✅ |
+
+Os casos que **nunca salvavam** com think off (sono/reunião/bd) salvam **6/6** com thinking.
+
+### Custo
+Latência ~2,5× (turno ~25s vs ~10s, medido sobre o relay DERP) + tokens de raciocínio por turno.
+
+### Decisão em aberto
+- (a) **thinking sempre** — mais confiável, mais caro;
+- (b) **thinking só no turno de salvar** (híbrido) — barato no chat comum, confiável quando há fato a guardar; precisa detectar "tem fato a salvar" antes;
+- (c) ficar no off e aceitar 29% de perda — descartado pelos números.
+
+### Nota de infra (consertado em 14/11)
 O agente **não tinha caído** (`braza status` = ONLINE). O `http=000` era **connect timeout curto** sobre o relay **DERP(sao)**: o winserver só tem rota por relay (sem conexão direta), 1ª conexão lenta. Fix no harness: `--connect-timeout 40` + `--socks5` com IP (sem depender de MagicDNS). vLLM tem rota direta e responde rápido.
 
 ---
 
 ## 5. Próximos passos (fila)
 
-1. Fechar think-on × think-off e **decidir** o regime de salvar (off barato / on confiável / híbrido: thinking só no turno de salvar).
+1. ~~Fechar think-on × think-off~~ ✅ (seção 4). **Decidir o regime de salvar** (a/b/c da seção 4) — aguarda o dono.
 2. Resolver **consistência do texto salvo** (texto livre dá ~7 redações pra mesma coisa) → convenção canônica leve ou campos estruturados.
 3. Alias do argumento (`texto`↔`text`) na tool real.
 4. Só então: desenhar a **estrutura** do cérebro novo (entidades/busca).
