@@ -1,0 +1,273 @@
+<title>Cérebro — salvar memória</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: quadros de rascunho (estilo quadro branco), um assunto por quadro, pouco texto. */
+:root{
+  --papel:#fbfbf8; --quadro:#ffffff; --tinta:#1e1e1e; --lapis:#6b6b6b; --grade:#e9e9e4;
+  --azul:#1971c2; --azul-bg:#d0ebff;
+  --verde:#2b8a3e; --verde-bg:#d3f9d8;
+  --roxo:#7048e8; --roxo-bg:#e5dbff;
+  --verm:#e03131; --verm-bg:#ffe3e3;
+  --amar:#e8590c; --amar-bg:#fff3bf;
+  --cinza-bg:#f1f3f5;
+  --mao:"Kalam", "Patrick Hand", "Comic Sans MS", cursive;
+  --mao2:"Patrick Hand", "Kalam", "Comic Sans MS", cursive;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --papel:#121212; --quadro:#1b1b1b; --tinta:#e8e8e8; --lapis:#a5a5a5; --grade:#262626;
+  --azul:#74c0fc; --azul-bg:#1c3550; --verde:#8ce99a; --verde-bg:#1e3a24;
+  --roxo:#b197fc; --roxo-bg:#2e2650; --verm:#ff8787; --verm-bg:#4a2020;
+  --amar:#ffc078; --amar-bg:#4a3a14; --cinza-bg:#262626; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --papel:#121212; --quadro:#1b1b1b; --tinta:#e8e8e8; --lapis:#a5a5a5; --grade:#262626;
+  --azul:#74c0fc; --azul-bg:#1c3550; --verde:#8ce99a; --verde-bg:#1e3a24;
+  --roxo:#b197fc; --roxo-bg:#2e2650; --verm:#ff8787; --verm-bg:#4a2020;
+  --amar:#ffc078; --amar-bg:#4a3a14; --cinza-bg:#262626; color-scheme:dark }
+
+body{background:var(--papel);color:var(--tinta);font-family:var(--mao2);font-size:18px;line-height:1.35;
+  background-image:radial-gradient(var(--grade) 1.2px, transparent 1.2px);background-size:22px 22px}
+.wrap{max-width:1180px;margin:0 auto;padding-block:26px 70px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:30px}
+h1{font-family:var(--mao);font-size:2.1rem;margin:0;line-height:1.1}
+h2{font-family:var(--mao);font-size:1.45rem;margin:0}
+.sub{color:var(--lapis)}
+.mono{font-family:var(--mono);font-size:.72em}
+big{font-family:var(--mao);font-weight:700;font-size:1.3em}
+
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top, 0px);z-index:10;background:var(--papel)}
+nav{position:sticky;top:env(safe-area-inset-top, 0px);z-index:5;background:var(--papel);padding-block:8px;display:flex;gap:8px;flex-wrap:wrap;
+  border-bottom:2px solid var(--tinta);border-radius:0 0 4px 30px/0 0 3px 6px}
+nav a{font-family:var(--mao);text-decoration:none;color:var(--tinta);font-size:.95rem;padding:1px 10px;border:2px solid var(--tinta);
+  border-radius:255px 15px 225px 15px/15px 225px 15px 255px;background:var(--quadro)}
+nav a:hover,nav a:focus-visible{background:var(--amar-bg);outline:none}
+
+.quadro{background:var(--quadro);border:2.5px solid var(--tinta);border-radius:12px 22px 14px 26px/24px 12px 22px 12px;padding:18px 20px 22px;
+  display:flex;flex-direction:column;gap:16px;scroll-margin-top:64px;box-shadow:4px 5px 0 var(--grade)}
+.quadro > header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
+.num{font-family:var(--mao);font-weight:700;font-size:1.1rem;border:2px solid var(--tinta);border-radius:50%;width:34px;height:34px;
+  display:inline-flex;align-items:center;justify-content:center;flex:none}
+
+.cx{border:2px solid var(--tinta);border-radius:255px 15px 225px 15px/15px 225px 15px 255px;padding:8px 13px;background:var(--quadro);
+  display:inline-flex;flex-direction:column;gap:1px;min-width:0;text-align:center;line-height:1.2;position:relative}
+.cx b{font-family:var(--mao);font-weight:700}
+.cx small{color:var(--lapis);font-size:.78rem}
+.azul{border-color:var(--azul);background:var(--azul-bg)}
+.verde{border-color:var(--verde);background:var(--verde-bg)}
+.roxo{border-color:var(--roxo);background:var(--roxo-bg)}
+.verm{border-color:var(--verm);background:var(--verm-bg)}
+.amar{border-color:var(--amar);background:var(--amar-bg)}
+.cinza{border-color:var(--lapis);background:var(--cinza-bg);border-style:dashed}
+.cad::after{content:"🔒";position:absolute;top:-10px;right:-8px;font-size:.85rem}
+.rasc::after{content:"✎";position:absolute;top:-11px;right:-6px;font-size:.95rem}
+
+.fila{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.seta{font-family:var(--mao);font-size:1.6rem;color:var(--tinta);line-height:1;padding:0 2px}
+.seta.l{font-size:.85rem;display:inline-flex;flex-direction:column;align-items:center;gap:0}
+.seta.l span{font-size:1.6rem;line-height:1}
+.seta.l em{font-style:normal;color:var(--lapis);font-family:var(--mao2);font-size:.8rem;white-space:nowrap}
+.raia{display:grid;grid-template-columns:140px minmax(0,1fr);gap:10px;align-items:center}
+.raia > .rot{font-family:var(--mao);font-weight:700;text-align:right;color:var(--lapis)}
+@media (max-width:700px){.raia{grid-template-columns:minmax(0,1fr)}.raia > .rot{text-align:left}}
+.post{background:var(--amar-bg);border:2px solid var(--amar);padding:8px 12px;border-radius:3px 10px 4px 12px;transform:rotate(-1deg);font-size:.9rem;max-width:380px}
+.post.az{background:var(--azul-bg);border-color:var(--azul);transform:rotate(1deg)}
+.post.vd{background:var(--verde-bg);border-color:var(--verde);transform:rotate(-.5deg)}
+.risco{font-family:var(--mao);color:var(--lapis);font-size:.9rem}
+
+.job{border:2px solid var(--tinta);border-radius:10px 16px 8px 14px/14px 8px 16px 10px;background:var(--quadro);overflow:hidden}
+.job .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:8px 12px;border-bottom:2px dashed var(--tinta);font-family:var(--mao)}
+.jt{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.92rem;min-width:420px}
+th,td{padding:6px 12px;text-align:left;border-bottom:1.5px dashed var(--grade)}
+th{font-family:var(--mao);font-weight:700;color:var(--lapis)}
+tr:last-child td{border-bottom:none}
+td.num-c{font-family:var(--mono)}
+.ok{color:var(--verde);font-weight:700}.nv{color:var(--azul);font-weight:700}.cr{color:var(--roxo);font-weight:700}.fa{color:var(--verm);font-weight:700}
+
+.duas{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.tres{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:820px){.duas,.tres{grid-template-columns:minmax(0,1fr)}}
+.ramo{border:2px dashed var(--lapis);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ramo h3{font-family:var(--mao);margin:0;font-size:1.1rem}
+.ramo.sim{border-color:var(--verde)} .ramo.nao{border-color:var(--verm)}
+
+.duvidas{display:flex;flex-wrap:wrap;gap:12px}
+.duvidas .post{max-width:300px}
+</style>
+<div class="wrap">
+<header style="display:flex;flex-direction:column;gap:8px">
+  <h1>Cérebro — como o agente salva memória</h1>
+  <div class="sub">investigação do <b>salvar</b> na reescrita do cérebro · branch <span class="mono">feat/cerebro</span> · 14–15/11/2026 · modelo <span class="mono">qwen35-27b-abl</span></div>
+  <!-- LEGENDA -->
+  <div class="fila" style="gap:10px">
+    <span class="cx azul"><b>agente / passo</b></span>
+    <span class="cx roxo"><b>ferramenta</b><small>salvar · perguntar</small></span>
+    <span class="cx amar rasc"><b>ambíguo</b><small>em questão</small></span>
+    <span class="cx verde"><b>agiu / certo</b></span>
+    <span class="cx verm"><b>falhou</b><small>narrou · erro</small></span>
+    <span class="cx cinza"><b>descartado</b></span>
+  </div>
+</header>
+
+<nav aria-label="Quadros">
+  <a href="#objetivo">objetivo</a><a href="#metodo">método</a><a href="#estrutura">estrutura</a>
+  <a href="#prompt">prompt v1→v3</a><a href="#gargalos">gargalos</a><a href="#thinking">thinking</a>
+  <a href="#casos">por caso</a><a href="#custo">custo</a><a href="#duvidas">decisão</a>
+</nav>
+
+<!-- 1. OBJETIVO -->
+<section class="quadro" id="objetivo">
+  <header><span class="num">1</span><h2>O que investigamos</h2></header>
+  <div class="raia"><span class="rot">o dono fala</span>
+    <div class="fila">
+      <span class="cx"><b>"fiz 4x10x50 no supino"</b></span>
+      <span class="seta l"><span>→</span><em>lapidar em memória</em></span>
+      <span class="cx roxo"><b>salvar(texto)</b><small>registro buscável depois</small></span>
+    </div></div>
+  <div class="raia"><span class="rot">quando é dúbio</span>
+    <div class="fila">
+      <span class="cx amar rasc"><b>"50 kg..."</b></span>
+      <span class="seta l"><span>→</span><em>falta detalhe</em></span>
+      <span class="cx roxo"><b>perguntar</b><small>"cada lado ou total?"</small></span>
+      <span class="seta">→</span>
+      <span class="cx roxo"><b>salvar</b><small>só com certeza</small></span>
+    </div></div>
+  <div class="post">Antes de desenhar a <b>estrutura</b> do cérebro: entender <b>como</b> ele grava e <b>quando</b> pergunta em vez de chutar.</div>
+</section>
+
+<!-- 2. MÉTODO -->
+<section class="quadro" id="metodo">
+  <header><span class="num">2</span><h2>O método — o maior aprendizado</h2></header>
+  <div class="fila">
+    <span class="cx"><b>fala</b><small>HTTP · 18 casos × 6</small></span>
+    <span class="seta l"><span>→</span><em>POST /chat</em></span>
+    <span class="cx azul"><b>AGENTE REAL</b><small>prompt + ~20 tools</small></span>
+    <span class="seta l"><span>→</span><em>lê a sessão</em></span>
+    <span class="cx roxo"><b>role:tool</b><small>prova do que rodou</small></span>
+    <span class="seta l"><span>→</span><em>classifica</em></span>
+    <span class="cx"><b>salvou · perguntou<br>narrou · erro</b></span>
+  </div>
+  <div class="duas">
+    <div class="ramo nao"><h3>✕ script isolado</h3>
+      <div class="fila"><span class="cx verm"><b>1 tool + prompt mínimo</b><small>tool "não dispara", mangla args</small></span></div>
+      <span class="risco">= artefato do ambiente pobre. Enganou nas primeiras medições.</span></div>
+    <div class="ramo sim"><h3>✓ agente real rodando</h3>
+      <div class="fila"><span class="cx verde"><b>fluxo completo</b><small>a tool dispara limpa</small></span></div>
+      <span class="risco">as outras tools funcionam → o problema era o teste, não o modelo.</span></div>
+  </div>
+  <div class="post vd">Regra nova: <b>testar tool SEMPRE dentro do agente real</b>, nunca em script isolado.</div>
+</section>
+
+<!-- 3. ESTRUTURA > INSTRUÇÃO -->
+<section class="quadro" id="estrutura">
+  <header><span class="num">3</span><h2>Estrutura vence instrução</h2></header>
+  <div class="duas">
+    <div class="ramo nao"><h3>só prompt manda perguntar</h3>
+      <div class="fila"><span class="cx verm"><b>pergunta 0/3</b><small>no ambíguo</small></span></div>
+      <span class="risco">instrução suave e trava dura: sempre salva o chute. "Chutar é erro" não basta.</span></div>
+    <div class="ramo sim"><h3>tool <span class="mono">perguntar()</span> separada</h3>
+      <div class="fila"><span class="cx verde"><b>pergunta 3/3</b><small>no ambíguo</small></span><span class="cx verde"><b>salva o claro</b></span></div>
+      <span class="risco">a decisão salvar-vs-esclarecer é <b>estrutura (tool)</b>, não regra de texto.</span></div>
+  </div>
+</section>
+
+<!-- 4. PROMPT v1→v3 -->
+<section class="quadro" id="prompt">
+  <header><span class="num">4</span><h2>Iteração do prompt (think off)</h2></header>
+  <div class="job">
+    <div class="top"><span class="cx roxo"><b>salvar + perguntar</b></span><span>108 turnos por versão · salvou↑ bom · erro↓ bom</span></div>
+    <div class="jt"><table>
+      <thead><tr><th>versão</th><th>mudança</th><th>salvou</th><th>erro</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><b>v1</b></td><td>instrução base de memória</td><td class="num-c">38</td><td class="num-c">11</td><td class="risco">salva pouco</td></tr>
+        <tr><td><b>v2</b></td><td>"chamar é ação" + 3ª pessoa + "só o que disse" + <i>"salvar não tem limite"</i></td><td class="num-c nv">50</td><td class="num-c fa">22</td><td class="fa">erro DOBROU</td></tr>
+        <tr><td><b>v3</b></td><td>tira a linha <i>"salvar não tem limite"</i></td><td class="num-c ok">48</td><td class="num-c ok">12</td><td class="ok">melhor balanço</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="post az"><b>O "erro" não é alucinação:</b> é o guard do orchestrator quando o <b>argumento é truncado</b> (estourou o limite escrevendo). A linha "não tem limite" <b>primou</b> o problema → tirá-la resolveu. <span class="risco">Cuidado: negação no prompt prima o indesejado.</span></div>
+</section>
+
+<!-- 5. GARGALOS -->
+<section class="quadro" id="gargalos">
+  <header><span class="num">5</span><h2>Os 2 gargalos que resistiam ao prompt</h2></header>
+  <div class="duas">
+    <div class="ramo nao"><h3>"promete e não chama"</h3>
+      <div class="fila"><span class="cx"><b>dono conta um fato</b></span><span class="seta">→</span><span class="cx verm"><b>"Anotado! ✅"</b><small>mas NÃO chamou salvar</small></span></div>
+      <span class="risco">~23–29% dos turnos. Estrutural — não some por texto.</span></div>
+    <div class="ramo nao"><h3>argumento truncado</h3>
+      <div class="fila"><span class="cx"><b>texto longo</b></span><span class="seta">→</span><span class="cx verm"><b>corta no meio</b><small>guard barra · save some</small></span></div>
+      <span class="risco">pior modo de falha: o save some em silêncio.</span></div>
+  </div>
+  <div class="post">Hipótese: se o modelo <b>raciocinar antes</b> ("é fato → tenho que chamar salvar"), os dois caem. → testar thinking.</div>
+</section>
+
+<!-- 6. THINKING -->
+<section class="quadro" id="thinking">
+  <header><span class="num">6</span><h2>Resultado — thinking LIGADO é decisivo</h2></header>
+  <div class="job">
+    <div class="top"><span class="cx azul"><b>mesmos 18 × 6</b></span><span>só mudou <span class="mono">think: false → true</span> · 108 turnos cada</span></div>
+    <div class="jt"><table>
+      <thead><tr><th>o que aconteceu</th><th>think off (v3)</th><th>think on</th><th></th></tr></thead>
+      <tbody>
+        <tr><td><b>salvou</b></td><td class="num-c">48</td><td class="num-c ok">95</td><td class="ok">quase o dobro</td></tr>
+        <tr><td>perguntou</td><td class="num-c">17</td><td class="num-c">10</td><td class="risco">menos, mas mais certo</td></tr>
+        <tr><td><b>narrou</b> <span class="risco">(não chamou)</span></td><td class="num-c fa">25</td><td class="num-c ok">2</td><td class="ok">↓</td></tr>
+        <tr><td>narrou + pergunta</td><td class="num-c fa">6</td><td class="num-c ok">1</td><td></td></tr>
+        <tr><td><b>erro</b> <span class="risco">(truncado)</span></td><td class="num-c fa">12</td><td class="num-c ok">0</td><td class="ok">zerou</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="fila" style="gap:16px">
+    <div class="post vd"><big>AGIU: 60% → 97%</big><br><span class="risco">salvou + perguntou</span></div>
+    <div class="post vd"><big>NÃO CHAMOU: 29% → 3%</big><br><span class="risco">o gargalo estrutural que resistia</span></div>
+  </div>
+</section>
+
+<!-- 7. POR CASO -->
+<section class="quadro" id="casos">
+  <header><span class="num">7</span><h2>Por caso — o thinking calibra</h2></header>
+  <div class="job">
+    <div class="jt"><table>
+      <thead><tr><th>caso</th><th>esperado</th><th>off</th><th>on</th></tr></thead>
+      <tbody>
+        <tr><td>supino 4x10x50</td><td class="cr">perguntar</td><td class="fa">narrou 4 · 0 pergunta útil</td><td class="ok">perguntou 4 ✓</td></tr>
+        <tr><td>mercado 50</td><td class="cr">perguntar</td><td class="ok">perguntou 5 ✓</td><td class="ok">perguntou 5 ✓</td></tr>
+        <tr><td>trabalho</td><td class="nv">salvar</td><td class="fa">salvou 3 · pergunta à toa</td><td class="ok">salvou 6 ✓</td></tr>
+        <tr><td>banco de dados</td><td class="nv">salvar</td><td class="fa">erro 6 (truncou tudo)</td><td class="ok">salvou 6 ✓</td></tr>
+        <tr><td>reunião amanhã</td><td class="nv">salvar</td><td class="fa">erro/narrou · 0 salvou</td><td class="ok">salvou 6 ✓</td></tr>
+        <tr><td>dormi 6 horas</td><td class="nv">salvar</td><td class="fa">narrou/erro · 1 salvou</td><td class="ok">salvou 6 ✓</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="post vd">Casos que <b>nunca salvavam</b> com think off (sono, reunião, banco) salvam <b>6/6</b> com thinking. O supino ambíguo passou a <b>perguntar</b> em vez de narrar.</div>
+</section>
+
+<!-- 8. CUSTO -->
+<section class="quadro" id="custo">
+  <header><span class="num">8</span><h2>O custo do thinking</h2></header>
+  <div class="fila">
+    <span class="cx azul"><b>turno think off</b><small>~10 s</small></span>
+    <span class="seta l"><span>→</span><em>liga thinking</em></span>
+    <span class="cx amar"><b>turno think on</b><small>~25 s · ~2,5×</small></span>
+    <span class="seta">+</span>
+    <span class="cx amar"><b>tokens de raciocínio</b><small>por turno</small></span>
+  </div>
+  <div class="post">Latência medida sobre o relay DERP do winserver; a conta é latência + tokens em <b>todo</b> turno — a não ser que se ligue thinking <b>só</b> quando há fato a guardar.</div>
+</section>
+
+<!-- 9. DECISÃO / DÚVIDAS -->
+<section class="quadro" id="duvidas">
+  <header><span class="num">9</span><h2>Decisão em aberto</h2></header>
+  <div class="tres">
+    <div class="ramo"><h3>(a) thinking sempre</h3><span class="risco">+ mais confiável<br>− ~2,5× latência + tokens em todo turno</span></div>
+    <div class="ramo sim"><h3>(b) híbrido ★</h3><span class="risco">thinking só no turno com fato a salvar. Barato no chat comum. <b>Precisa detectar "tem fato".</b></span></div>
+    <div class="ramo nao"><h3>(c) off</h3><span class="risco">descartado — perde 29%.</span></div>
+  </div>
+  <div class="duvidas">
+    <div class="post">Qual regime: <b>a</b>, <b>b</b> ou <b>c</b>?</div>
+    <div class="post az">Consistência do <b>texto salvo</b>: texto livre dá ~7 redações pra mesma coisa. Convenção leve ou campos?</div>
+    <div class="post vd">Depois disso: desenhar a <b>estrutura</b> do cérebro novo (entidades + busca).</div>
+  </div>
+</section>
+</div>
